@@ -21,73 +21,73 @@ type InstallationState struct {
 }
 
 type InstallationGui struct {
-	base        *widgets.QWidget // Contains the main layout for the installation widget
+	container   *widgets.QWidget // Contains the main layout with all the other widgets
 	steps       *StepsWidget
 	tips        *TipsWidget
 	navigation  *NavigationWidget
-	mainContent *MainContentWidget
+	mainContent *MainContentLayout
 }
 
+// Contains the buttons for the different installation steps
 type StepsWidget struct {
-	// Contains the buttons for the different installation steps
 	widget    *widgets.QWidget
 	platform  *widgets.QPushButton
 	variables *widgets.QPushButton
 	install   *widgets.QPushButton
 }
 
+// Contains the tips for the different installation steps
 type TipsWidget struct {
-	// Contains the tips for the different installation steps
 	tips   *widgets.QLabel
 	widget *widgets.QWidget
 }
 
+// Contains the navigation buttons (back and next)
 type NavigationWidget struct {
-	// Contains the navigation buttons (back and next)
 	widget *widgets.QWidget
 	back   *widgets.QPushButton
 	next   *widgets.QPushButton
 }
 
-type MainContentWidget struct {
-	// Contains the main content for the different installation steps
-	mainContent *widgets.QWidget
+// Contains the layout for the main content of the installation steps
+type MainContentLayout struct {
+	container   *widgets.QVBoxLayout // Just a container for the main content (used to add the main content to the window)
+	mainContent *widgets.QVBoxLayout // The actual layout for the main content
 }
 
 // Function to create the installation widget
 func NewInstallationGui(stackedWidget *widgets.QStackedWidget) *InstallationGui {
-	// Create a new QWidget and QGridLayout for the platform widget
-	platformWidget := widgets.NewQWidget(nil, core.Qt__Widget)
-	platformLayout := widgets.NewQVBoxLayout()
+	// Create a new QWidget and QVBoxLayout for the installation widget
+	root := widgets.NewQWidget(nil, core.Qt__Widget)
+	rootLayout := widgets.NewQVBoxLayout()
 
-	// Get the components of the gui
+	// Get the components for the gui
 	stepsWidget := NewStepsWidget()
 	tipsWidget := NewTipsWidget()
 	navigationWidget := NewNavigationWidget(stackedWidget)
-	mainContentWidget := NewMainContentWidget()
+	mainContentWidget := NewMainContentLayout()
 
 	// Build the steps and tips layout
-	stepsAndTipsWidget := widgets.NewQWidget(nil, 0)
-	stepsAndTipsWidget.SetMaximumWidth(200)
 	stepsAndTipsLayout := widgets.NewQVBoxLayout()
-	stepsAndTipsWidget.SetLayout(stepsAndTipsLayout)
 	stepsAndTipsLayout.AddWidget(stepsWidget.widget, 0, core.Qt__AlignLeft|core.Qt__AlignTop)
 	stepsAndTipsLayout.AddWidget(tipsWidget.widget, 1, core.Qt__AlignLeft|core.Qt__AlignTop)
+	stepsWidget.widget.SetMaximumWidth(200)
+	tipsWidget.widget.SetMaximumWidth(200)
 
 	// Build the main layout
 	mainLayout := widgets.NewQHBoxLayout()
-	mainLayout.AddWidget(stepsAndTipsWidget, 0, 0)
-	mainLayout.AddWidget(mainContentWidget.mainContent, 0, 0)
+	mainLayout.AddLayout(stepsAndTipsLayout, 0)
+	mainLayout.AddLayout(mainContentWidget.container, 1)
 
-	// Add the main layout and the navigation layout to the platform layout
-	platformLayout.AddLayout(mainLayout, 1)
-	platformLayout.AddWidget(navigationWidget.widget, 0, core.Qt__AlignBottom)
+	// Add the main layout and the navigation widget to the root layout
+	rootLayout.AddLayout(mainLayout, 1)
+	rootLayout.AddWidget(navigationWidget.widget, 0, core.Qt__AlignBottom)
 
-	// Set the platform layout on the platform widget
-	platformWidget.SetLayout(platformLayout)
+	// Set the layout on the root widget
+	root.SetLayout(rootLayout)
 
 	return &InstallationGui{
-		base:        platformWidget,
+		container:   root,
 		steps:       stepsWidget,
 		tips:        tipsWidget,
 		navigation:  navigationWidget,
@@ -102,8 +102,9 @@ func NewTipsWidget() *TipsWidget {
 	tipsWidget.SetLayout(tipsLayout)
 
 	// Create a QLabel for the tips
-	tipsLabel := widgets.NewQLabel2("Tips", nil, 0)
+	tipsLabel := widgets.NewQLabel2("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras ut lacus volutpat, finibus leo non, aliquam nulla. Duis vel cursus quam. Sed mollis ullamcorper sem, ut dapibus libero auctor nec.", nil, 0)
 	// tipsLabel.SetStyleSheet("font-size: 16px;")
+	tipsLabel.SetWordWrap(true)
 
 	// Create a group box
 	groupBox := widgets.NewQGroupBox2("Info", nil)
@@ -137,8 +138,7 @@ func NewStepsWidget() *StepsWidget {
 	button2 := widgets.NewQPushButton2("Variables", nil)
 	button3 := widgets.NewQPushButton2("Launch", nil)
 
-	// TODO: Set the size of the buttons to be the same
-
+	// Disable the buttons by default
 	button1.SetEnabled(false)
 	button2.SetEnabled(false)
 	button3.SetEnabled(false)
@@ -191,9 +191,8 @@ func NewNavigationWidget(stackedWidget *widgets.QStackedWidget) *NavigationWidge
 	}
 }
 
-func NewMainContentWidget() *MainContentWidget {
-	// Create a widget and a layout for the main content
-	mainContentWidget := widgets.NewQWidget(nil, 0)
+func NewMainContentLayout() *MainContentLayout {
+	// Create a layout for the main content
 	mainContentLayout := widgets.NewQVBoxLayout()
 
 	// Create a group box
@@ -201,17 +200,14 @@ func NewMainContentWidget() *MainContentWidget {
 	groupBoxLayout := widgets.NewQVBoxLayout()
 	groupBox.SetLayout(groupBoxLayout)
 
-	// Create a QLabel for the main content
-	mainContentLabel := widgets.NewQLabel2("Main content", nil, 0)
-	groupBoxLayout.AddWidget(mainContentLabel, 0, core.Qt__AlignCenter)
-
 	// Add the group box to the main content layout
 	mainContentLayout.AddWidget(groupBox, 0, 0)
 
-	// Set the layout on the widget
-	mainContentWidget.SetLayout(mainContentLayout)
-
-	return &MainContentWidget{
-		mainContent: mainContentWidget,
+	// Store both the main content layout and the group box layout:
+	// - The main content layout is used to add the main content to the window
+	// - The group box layout needs to be populated with the main content of the actual step
+	return &MainContentLayout{
+		container:   mainContentLayout,
+		mainContent: groupBoxLayout,
 	}
 }
