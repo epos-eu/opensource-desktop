@@ -1,71 +1,112 @@
 package installation
 
 import (
+	"fmt"
+
 	"github.com/therecipe/qt/core"
 	"github.com/therecipe/qt/widgets"
 )
 
-// Platform represents the platform choice
-type Platform int
+// step represents the different installation steps
+type step int
 
 const (
-	Docker     Platform = iota // 0
-	Kubernetes                 // 1
+	platformStep step = iota
+	environmentStep
+	variablesStep
+	installStep
 )
 
-// InstallationState represents the state of the installation with the user's choices
-type InstallationState struct {
-	StackedWidget *widgets.QStackedWidget // The stacked widget to navigate between the different installation steps
-	Platform      Platform                // The platform choice
+// platform represents the platform choice
+type platform int
+
+const (
+	docker     platform = iota // 0
+	kubernetes                 // 1
+)
+
+// installationState represents the state of the installation with the user's choices
+type installationState struct {
+	stackedWidget *widgets.QStackedWidget // The stacked widget to navigate between the different installation steps
+	activeStep    step                    // The last step the user has arrived at
+	platform      platform                // The platform choice
+	environment   Environment
 	// Add more fields here
 }
 
-type InstallationGui struct {
-	container   *widgets.QWidget // Contains the main layout with all the other widgets
-	steps       *StepsWidget
-	tips        *TipsWidget
-	navigation  *NavigationWidget
-	mainContent *MainContentLayout
+// This function transitions to the next step in the installation process only if called from the last step in the chain
+func (i *installationState) nextStep(currentStep step) step {
+	// Only transition to the next step if the current step is the active step
+	if currentStep == i.activeStep {
+		i.activeStep++
+	}
+	// Return the new active step (to check if the transition was successful)
+	return i.activeStep
+}
+
+func (i *installationState) setEnvironment(environment Environment) {
+	i.environment = environment
+}
+
+func (i *installationState) setPlatform(p platform) {
+	i.platform = p
+}
+
+func (i *installationState) log() {
+	fmt.Printf("Current Installation State:\n")
+	fmt.Printf("Platform: %v\n", i.platform)
+	fmt.Printf("Environment: %v\n", i.environment)
+	fmt.Printf("Active Step: %v\n", i.activeStep)
+}
+
+type installationGui struct {
+	container         *widgets.QWidget        // Contains the main layout with all the other widgets
+	rootStackedWidget *widgets.QStackedWidget // The stacked widget to navigate between the different installation steps
+	steps             *stepsGui
+	tips              *tipsGui
+	navigation        *navigationGui
+	mainContent       *mainContentLayout
 }
 
 // Contains the buttons for the different installation steps
-type StepsWidget struct {
-	widget    *widgets.QWidget
-	platform  *widgets.QPushButton
-	variables *widgets.QPushButton
-	install   *widgets.QPushButton
+type stepsGui struct {
+	widget      *widgets.QWidget
+	platform    *widgets.QPushButton
+	environment *widgets.QPushButton
+	variables   *widgets.QPushButton
+	install     *widgets.QPushButton
 }
 
 // Contains the tips for the different installation steps
-type TipsWidget struct {
+type tipsGui struct {
 	tips   *widgets.QLabel
 	widget *widgets.QWidget
 }
 
 // Contains the navigation buttons (back and next)
-type NavigationWidget struct {
+type navigationGui struct {
 	widget *widgets.QWidget
 	back   *widgets.QPushButton
 	next   *widgets.QPushButton
 }
 
 // Contains the layout for the main content of the installation steps
-type MainContentLayout struct {
+type mainContentLayout struct {
 	container   *widgets.QVBoxLayout // Just a container for the main content (used to add the main content to the window)
 	mainContent *widgets.QVBoxLayout // The actual layout for the main content
 }
 
 // Function to create the installation widget
-func NewInstallationGui(stackedWidget *widgets.QStackedWidget) *InstallationGui {
+func newInstallationGui(stackedWidget *widgets.QStackedWidget) *installationGui {
 	// Create a new QWidget and QVBoxLayout for the installation widget
-	root := widgets.NewQWidget(nil, core.Qt__Widget)
+	root := widgets.NewQWidget(nil, 0)
 	rootLayout := widgets.NewQVBoxLayout()
 
 	// Get the components for the gui
-	stepsWidget := NewStepsWidget()
-	tipsWidget := NewTipsWidget()
-	navigationWidget := NewNavigationWidget(stackedWidget)
-	mainContentWidget := NewMainContentLayout()
+	stepsWidget := newStepsWidget()
+	tipsWidget := newTipsWidget()
+	navigationWidget := newNavigationWidget(stackedWidget)
+	mainContentWidget := newMainContentLayout()
 
 	// Build the steps and tips layout
 	stepsAndTipsLayout := widgets.NewQVBoxLayout()
@@ -86,16 +127,17 @@ func NewInstallationGui(stackedWidget *widgets.QStackedWidget) *InstallationGui 
 	// Set the layout on the root widget
 	root.SetLayout(rootLayout)
 
-	return &InstallationGui{
-		container:   root,
-		steps:       stepsWidget,
-		tips:        tipsWidget,
-		navigation:  navigationWidget,
-		mainContent: mainContentWidget,
+	return &installationGui{
+		container:         root,
+		rootStackedWidget: stackedWidget,
+		steps:             stepsWidget,
+		tips:              tipsWidget,
+		navigation:        navigationWidget,
+		mainContent:       mainContentWidget,
 	}
 }
 
-func NewTipsWidget() *TipsWidget {
+func newTipsWidget() *tipsGui {
 	// Create a widget and a layout for the tips
 	tipsWidget := widgets.NewQWidget(nil, 0)
 	tipsLayout := widgets.NewQVBoxLayout()
@@ -117,13 +159,13 @@ func NewTipsWidget() *TipsWidget {
 	// Add the group box to the tips layout
 	tipsLayout.AddWidget(groupBox, 0, 0)
 
-	return &TipsWidget{
+	return &tipsGui{
 		tips:   tipsLabel,
 		widget: tipsWidget,
 	}
 }
 
-func NewStepsWidget() *StepsWidget {
+func newStepsWidget() *stepsGui {
 	// Create a layout for the steps
 	stepsWidget := widgets.NewQWidget(nil, 0)
 	stepsLayout := widgets.NewQVBoxLayout()
@@ -134,19 +176,22 @@ func NewStepsWidget() *StepsWidget {
 	groupBox.SetLayout(groupBoxLayout)
 
 	// Create a button for each step
-	button1 := widgets.NewQPushButton2("Platform", nil)
-	button2 := widgets.NewQPushButton2("Variables", nil)
-	button3 := widgets.NewQPushButton2("Launch", nil)
+	platform := widgets.NewQPushButton2("Platform", nil)
+	environment := widgets.NewQPushButton2("Environment", nil)
+	variables := widgets.NewQPushButton2("Variables", nil)
+	launch := widgets.NewQPushButton2("Launch", nil)
 
 	// Disable the buttons by default
-	button1.SetEnabled(false)
-	button2.SetEnabled(false)
-	button3.SetEnabled(false)
+	platform.SetEnabled(false)
+	environment.SetEnabled(false)
+	variables.SetEnabled(false)
+	launch.SetEnabled(false)
 
 	// Add the buttons to the group box layout
-	groupBoxLayout.AddWidget(button1, 0, 0)
-	groupBoxLayout.AddWidget(button2, 0, 0)
-	groupBoxLayout.AddWidget(button3, 0, 0)
+	groupBoxLayout.AddWidget(platform, 0, 0)
+	groupBoxLayout.AddWidget(environment, 0, 0)
+	groupBoxLayout.AddWidget(variables, 0, 0)
+	groupBoxLayout.AddWidget(launch, 0, 0)
 
 	// Add the group box to the steps layout
 	stepsLayout.AddWidget(groupBox, 0, 0)
@@ -154,15 +199,16 @@ func NewStepsWidget() *StepsWidget {
 	// Set the layout on the widget
 	stepsWidget.SetLayout(stepsLayout)
 
-	return &StepsWidget{
-		widget:    stepsWidget,
-		platform:  button1,
-		variables: button2,
-		install:   button3,
+	return &stepsGui{
+		widget:      stepsWidget,
+		platform:    platform,
+		environment: environment,
+		variables:   variables,
+		install:     launch,
 	}
 }
 
-func NewNavigationWidget(stackedWidget *widgets.QStackedWidget) *NavigationWidget {
+func newNavigationWidget(stackedWidget *widgets.QStackedWidget) *navigationGui {
 	// Create a widget and a layout for the navigation buttons
 	navigationWidget := widgets.NewQWidget(nil, 0)
 	navigationLayout := widgets.NewQHBoxLayout()
@@ -170,8 +216,6 @@ func NewNavigationWidget(stackedWidget *widgets.QStackedWidget) *NavigationWidge
 	// Create the back button
 	backButton := widgets.NewQPushButton2("Back", nil)
 	backButton.ConnectClicked(func(checked bool) {
-		// Remove the current widget from the stacked widget
-		stackedWidget.RemoveWidget(stackedWidget.CurrentWidget())
 		// Go back to the previous widget in the stacked widget
 		stackedWidget.SetCurrentIndex(stackedWidget.CurrentIndex() - 1)
 	})
@@ -181,19 +225,22 @@ func NewNavigationWidget(stackedWidget *widgets.QStackedWidget) *NavigationWidge
 	nextButton := widgets.NewQPushButton2("Next", nil)
 	navigationLayout.AddWidget(nextButton, 0, core.Qt__AlignRight)
 
+	// Disable the next button by default
+	nextButton.SetEnabled(false)
+
 	// Set the layout on the widget
 	navigationWidget.SetLayout(navigationLayout)
 
-	return &NavigationWidget{
+	return &navigationGui{
 		widget: navigationWidget,
 		back:   backButton,
 		next:   nextButton,
 	}
 }
 
-func NewMainContentLayout() *MainContentLayout {
+func newMainContentLayout() *mainContentLayout {
 	// Create a layout for the main content
-	mainContentLayout := widgets.NewQVBoxLayout()
+	layout := widgets.NewQVBoxLayout()
 
 	// Create a group box
 	groupBox := widgets.NewQGroupBox(nil)
@@ -201,13 +248,13 @@ func NewMainContentLayout() *MainContentLayout {
 	groupBox.SetLayout(groupBoxLayout)
 
 	// Add the group box to the main content layout
-	mainContentLayout.AddWidget(groupBox, 0, 0)
+	layout.AddWidget(groupBox, 0, 0)
 
 	// Store both the main content layout and the group box layout:
 	// - The main content layout is used to add the main content to the window
 	// - The group box layout needs to be populated with the main content of the actual step
-	return &MainContentLayout{
-		container:   mainContentLayout,
+	return &mainContentLayout{
+		container:   layout,
 		mainContent: groupBoxLayout,
 	}
 }

@@ -6,29 +6,35 @@ import (
 	"github.com/therecipe/qt/widgets"
 )
 
-func NewPlatformGui(rootStackedWidget *widgets.QStackedWidget) *widgets.QWidget {
+// Returns a new platform installation widget. The homeStackedWidget is used to make the back button go back to the home widget
+func NewPlatformGui(homeStackedWidget *widgets.QStackedWidget) *widgets.QStackedWidget {
 	// Create a new StackWidget for the platform installation steps
-	installationStackedWidget := widgets.NewQStackedWidget(nil)
+	installationWidget := widgets.NewQStackedWidget(nil)
 
-	platformGui := NewInstallationGui(installationStackedWidget)
+	platformGui := newInstallationGui(installationWidget)
+	mainContentWidget := newMainContentWidget(platformGui)
+
+	installationWidget.AddWidget(platformGui.container)
 
 	// Enable the platform steps button
 	platformGui.steps.platform.SetEnabled(true)
 
 	// Add the main content widget to the main content layout
-	platformGui.mainContent.mainContent.AddWidget(newMainContentWidget(), 0, 0)
+	platformGui.mainContent.mainContent.AddWidget(mainContentWidget, 0, 0)
 
 	// Change the behavior of the back button to go back to the home widget
 	platformGui.navigation.back.DisconnectClicked()
 	platformGui.navigation.back.ConnectClicked(func(checked bool) {
-		rootStackedWidget.SetCurrentIndex(0)
+		// Go back to the home widget and remove this widget from the stacked widget (when going back to the home, the installation is considered cancelled, all the steps are lost)
+		homeStackedWidget.RemoveWidget(installationWidget)
+		homeStackedWidget.SetCurrentIndex(0)
 	})
 
-	return platformGui.container
+	return installationWidget
 }
 
 // Create a new widget for the main content
-func newMainContentWidget() *widgets.QWidget {
+func newMainContentWidget(instGui *installationGui) *widgets.QWidget {
 	// Create a new QWidget and QVBoxLayout for the main content widget
 	widget := widgets.NewQWidget(nil, 0)
 	layout := widgets.NewQHBoxLayout()
@@ -61,16 +67,55 @@ func newMainContentWidget() *widgets.QWidget {
 	dockerButton.SetToolTip("Install on Docker")
 	kubernetesButton.SetToolTip("Install on Kubernetes")
 
+	// Create a variable to store the selected platform
+	var selectedPlatform platform
+
 	// Connect the Toggled signal of each button to a slot that unchecks the other button
 	dockerButton.ConnectToggled(func(checked bool) {
 		if checked {
 			kubernetesButton.SetChecked(false)
+
+			selectedPlatform = docker
+
+			// Enable the next button
+			instGui.navigation.next.SetEnabled(true)
+		} else {
+			instGui.navigation.next.SetEnabled(false)
 		}
 	})
 	kubernetesButton.ConnectToggled(func(checked bool) {
 		if checked {
 			dockerButton.SetChecked(false)
+
+			selectedPlatform = kubernetes
+
+			// Enable the next button
+			instGui.navigation.next.SetEnabled(true)
+		} else {
+			instGui.navigation.next.SetEnabled(false)
 		}
+	})
+
+	// Initialize the InstallationState
+	installationState := installationState{
+		stackedWidget: instGui.rootStackedWidget,
+		activeStep:    platformStep,
+		platform:      selectedPlatform,
+	}
+
+	// Set the behavior of the next button
+	instGui.navigation.next.DisconnectClicked()
+	instGui.navigation.next.ConnectClicked(func(checked bool) {
+		// Set the selected platform in the installation state
+		installationState.setPlatform(selectedPlatform)
+		// Set the next step in the installation state
+		installationState.nextStep(platformStep)
+		// Create a new environment step widget
+		environmentStepWidget := newEnvironmentSetupGui(&installationState)
+		// Add the environment step widget to the stacked widget
+		installationState.stackedWidget.AddWidget(environmentStepWidget)
+		// Go to the next widget in the stacked widget
+		installationState.stackedWidget.SetCurrentIndex(installationState.stackedWidget.CurrentIndex() + 1)
 	})
 
 	// Add the buttons to the layout
