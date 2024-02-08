@@ -6,14 +6,23 @@ import (
 	"github.com/therecipe/qt/widgets"
 )
 
-func PlatformGui(stackedWidget *widgets.QStackedWidget) *widgets.QWidget {
-	platformGui := NewInstallationGui(stackedWidget)
+func NewPlatformGui(rootStackedWidget *widgets.QStackedWidget) *widgets.QWidget {
+	// Create a new StackWidget for the platform installation steps
+	installationStackedWidget := widgets.NewQStackedWidget(nil)
+
+	platformGui := NewInstallationGui(installationStackedWidget)
 
 	// Enable the platform steps button
 	platformGui.steps.platform.SetEnabled(true)
 
 	// Add the main content widget to the main content layout
 	platformGui.mainContent.mainContent.AddWidget(newMainContentWidget(), 0, 0)
+
+	// Change the behavior of the back button to go back to the home widget
+	platformGui.navigation.back.DisconnectClicked()
+	platformGui.navigation.back.ConnectClicked(func(checked bool) {
+		rootStackedWidget.SetCurrentIndex(0)
+	})
 
 	return platformGui.container
 }

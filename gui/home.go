@@ -74,7 +74,7 @@ func installButton(stackedWidget *widgets.QStackedWidget) *widgets.QPushButton {
 	button := widgets.NewQPushButton2("Install", nil)
 	button.ConnectClicked(func(checked bool) {
 		// Get the widget for the platform selection
-		platformWidget := installation.PlatformGui(stackedWidget)
+		platformWidget := installation.NewPlatformGui(stackedWidget)
 		// Add the platform widget to the stacked widget
 		stackedWidget.AddWidget(platformWidget)
 		// Set the platform widget as the current widget
