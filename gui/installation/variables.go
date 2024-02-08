@@ -1,6 +1,9 @@
 package installation
 
 import (
+	"fmt"
+
+	"github.com/epos-eu/opensource-desktop/backend"
 	"github.com/therecipe/qt/core"
 	"github.com/therecipe/qt/widgets"
 )
@@ -36,28 +39,44 @@ func newVariablesStepMainContentWidget(instGui *installationGui, instState *inst
 	formsLayout := widgets.NewQVBoxLayout()
 	formsWidget.SetLayout(formsLayout)
 
-	// TODO: Do this for real (use the env file?)
-	form := newFormLayout("General variables", map[string]string{
-		"Var1": "Default1",
-		"Var2": "Default2",
-		"Var3": "Default3",
-		"Var4": "Default4",
+	// Read the environment variablesSections from the env file
+	variablesSections, err := backend.ReadEnvFile("./opensource-cmd/opensource-docker/cmd/configurations/env.env")
+	if err != nil {
+		//TODO: show a popup with the error and go back to the previous step
+		fmt.Println("Error reading the env file:", err)
+	}
+
+	// Store the new forms to update the env file
+	forms := make(map[string]formWidget)
+
+	// Create a form layout for each section
+	for _, section := range variablesSections {
+		form := newFormLayout(section.Name, &section.Variables)
+		formsLayout.AddWidget(form.widget, 0, core.Qt__AlignHCenter)
+		forms[section.Name] = form
+	}
+
+	// Enable the next button
+	instGui.navigation.next.SetEnabled(true)
+
+	// Update the map of variables when the next button is clicked
+	instGui.navigation.next.ConnectClicked(func(checked bool) {
+		// Update the values of the variables in the env file
+		for sectionName, form := range forms {
+			for variable, textField := range form.textFields {
+				// Update the value of the variable
+				for _, section := range variablesSections {
+					if section.Name != sectionName {
+						continue
+
+					}
+					section.Variables[variable] = textField.Text()
+				}
+			}
+		}
+
+		// TODO: save the new variables to the env file?
 	})
-	formsLayout.AddWidget(form.widget, 0, core.Qt__AlignHCenter)
-	form2 := newFormLayout("Container 1", map[string]string{
-		"Var1": "Default1",
-		"Var2": "Default2",
-		"Var3": "Default3",
-		"Var4": "Default4",
-	})
-	formsLayout.AddWidget(form2.widget, 0, core.Qt__AlignHCenter)
-	form3 := newFormLayout("Container 2", map[string]string{
-		"Var1": "Default1",
-		"Var2": "Default2",
-		"Var3": "Default3",
-		"Var4": "Default4",
-	})
-	formsLayout.AddWidget(form3.widget, 0, core.Qt__AlignHCenter)
 
 	// Create a QScrollArea and set the forms widget as its widget
 	scrollArea := widgets.NewQScrollArea(nil)
@@ -76,7 +95,7 @@ type formWidget struct {
 	textFields map[string]*widgets.QLineEdit
 }
 
-func newFormLayout(title string, fields map[string]string) formWidget {
+func newFormLayout(title string, fields *map[string]string) formWidget {
 	widget := widgets.NewQWidget(nil, 0)
 	mainLayout := widgets.NewQVBoxLayout()
 	widget.SetLayout(mainLayout)
@@ -94,7 +113,7 @@ func newFormLayout(title string, fields map[string]string) formWidget {
 
 	// Create the fields for the form
 	textFields := make(map[string]*widgets.QLineEdit)
-	for fieldName, defaultValue := range fields {
+	for fieldName, defaultValue := range *fields {
 		// Create a QLineEdit for the text field
 		textField := widgets.NewQLineEdit(nil)
 		textField.SetMinimumWidth(250)
