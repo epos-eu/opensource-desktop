@@ -76,10 +76,12 @@ func newEnviromentStepMainContentWidget(instGui *installationGui, instState *ins
 			name:    nameInput.Text(),
 			version: versionInput.Text(),
 		})
-		// Go to the next step
+		// Increment the step
 		instState.nextStep(environmentStep)
 
-		// TODO: Go to the next step
+		// Go to the next step
+		instState.stackedWidget.AddWidget(newVariablesGui(instState))
+		instState.stackedWidget.SetCurrentIndex(instState.stackedWidget.CurrentIndex() + 1)
 	})
 
 	// Add the form layout to the main layout
