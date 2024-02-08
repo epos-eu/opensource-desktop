@@ -6,22 +6,22 @@ import (
 	"github.com/therecipe/qt/widgets"
 )
 
-func Home(stackedWidget *widgets.QStackedWidget) *widgets.QWidget {
+func NewHomeWidget(stackedWidget *widgets.QStackedWidget) *widgets.QWidget {
 	// Create a new QWidget and QVBoxLayout for the home widget
 	homeWidget := widgets.NewQWidget(nil, 0)
 	homeLayout := widgets.NewQVBoxLayout()
 	homeWidget.SetLayout(homeLayout)
 
-	// Create a QLabel for the central top section and add it to the home layout
-	label := widgets.NewQLabel2("Epos Open Source", nil, 0)
-	label.SetAlignment(core.Qt__AlignCenter)
-	label.SetStyleSheet("font-size: 20px; font-weight: bold;")
-	homeLayout.AddWidget(label, 0, 0)
+	// Create a central top widget and add it to the home layout
+	centralTopWidget := newCentralTopWidget()
+	homeLayout.AddWidget(centralTopWidget, 1, core.Qt__AlignHCenter)
 
 	// Create a QWidget and QVBoxLayout for the buttons
 	buttonsWidget := widgets.NewQWidget(nil, 0)
 	buttonsLayout := widgets.NewQVBoxLayout()
 	buttonsWidget.SetLayout(buttonsLayout)
+	// Set the dimensions of the buttons widget
+	buttonsWidget.SetFixedWidth(200)
 
 	// Create the documentation button
 	documentationButton := documentationButton()
@@ -36,9 +36,29 @@ func Home(stackedWidget *widgets.QStackedWidget) *widgets.QWidget {
 	buttonsLayout.AddWidget(installedEnvironmentsButton, 0, 0)
 
 	// Add the buttons widget to the home layout
-	homeLayout.AddWidget(buttonsWidget, 0, 0)
+	homeLayout.AddWidget(buttonsWidget, 0, core.Qt__AlignHCenter)
 
 	return homeWidget
+}
+
+func newCentralTopWidget() *widgets.QWidget {
+	// Create a Widget for the central top section
+	centralTopWidget := widgets.NewQWidget(nil, 0)
+	centralTopLayout := widgets.NewQVBoxLayout()
+	// Create a QLabel for the titleWidget and add it to the home layout
+	titleWidget := widgets.NewQLabel2("Epos Open Source", nil, 0)
+	titleWidget.SetAlignment(core.Qt__AlignCenter)
+	titleWidget.SetStyleSheet("font-size: 20px; font-weight: bold;")
+	centralTopLayout.AddWidget(titleWidget, 0, core.Qt__AlignHCenter)
+
+	// Create a QLabel for the text and add it to the home layout
+	textWidget := widgets.NewQLabel2("EPOS Data portal is an open source, service-based data integration system. It is based on a microservices architecture. The current web page includes general documentation about EPOS, technical documentation on the overall functioning of the architecture, and source code for each microservice. The package will also provide multi-platform executables to allow for full installation locally or on one or more remote servers using Docker and Kubernetes. The version is released under the GPLv3 license.", nil, 0)
+	textWidget.SetAlignment(core.Qt__AlignCenter)
+	textWidget.SetWordWrap(true)
+	centralTopLayout.AddWidget(textWidget, 1, core.Qt__AlignHCenter|core.Qt__AlignTop)
+
+	centralTopWidget.SetLayout(centralTopLayout)
+	return centralTopWidget
 }
 
 func documentationButton() *widgets.QPushButton {

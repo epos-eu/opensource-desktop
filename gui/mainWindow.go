@@ -13,7 +13,7 @@ func MainWindow() {
 	stackedWidget := widgets.NewQStackedWidget(nil)
 
 	// Add the home widget to the stacked widget
-	homeWidget := Home(stackedWidget)
+	homeWidget := NewHomeWidget(stackedWidget)
 	stackedWidget.AddWidget(homeWidget)
 
 	// Set the home widget as the current widget
