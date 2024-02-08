@@ -2,114 +2,71 @@ package installation
 
 import (
 	"github.com/therecipe/qt/core"
+	"github.com/therecipe/qt/gui"
 	"github.com/therecipe/qt/widgets"
 )
 
-func Platform() *widgets.QWidget {
-	// Create a new QWidget and QGridLayout for the platform widget
-	platformWidget := widgets.NewQWidget(nil, core.Qt__Widget)
-	platformLayout := widgets.NewQVBoxLayout()
+func PlatformGui(stackedWidget *widgets.QStackedWidget) *widgets.QWidget {
+	platformGui := NewInstallationGui(stackedWidget)
 
-	// Create a new QWidget for the steps and tips layout and set its maximum width
-	stepsAndTipsWidget := widgets.NewQWidget(nil, 0)
-	stepsAndTipsWidget.SetMaximumWidth(200)
+	// Enable the platform steps button
+	platformGui.steps.platform.SetEnabled(true)
 
-	// Create the steps and tips layout and set it on the stepsAndTipsWidget
-	stepsAndTipsLayout := widgets.NewQVBoxLayout()
-	stepsAndTipsWidget.SetLayout(stepsAndTipsLayout)
+	// Add the main content widget to the main content layout
+	platformGui.mainContent.mainContent.AddWidget(newMainContentWidget(), 0, 0)
 
-	// Add the steps layout and the tips layout to the steps and tips layout
-	stepsAndTipsLayout.AddWidget(stepsWidget(), 0, core.Qt__AlignLeft|core.Qt__AlignTop)
-	stepsAndTipsLayout.AddWidget(tipsWidget(), 0, core.Qt__AlignLeft|core.Qt__AlignTop)
-
-	// Create the main layout and add the stepsAndTipsWidget and the main content layout to it
-	mainLayout := widgets.NewQHBoxLayout()
-	mainLayout.AddWidget(stepsAndTipsWidget, 0, 0)
-	mainLayout.AddWidget(mainContentWidget(), 0, 0)
-
-	// Add the main layout and the navigation layout to the platform layout
-	platformLayout.AddLayout(mainLayout, 0)
-	platformLayout.AddWidget(navigationWidget(), 0, core.Qt__AlignBottom)
-
-	// Set the platform layout on the platform widget
-	platformWidget.SetLayout(platformLayout)
-
-	return platformWidget
+	return platformGui.container
 }
 
-func mainContentWidget() *widgets.QWidget {
-	// Create a widget and a layout for the main content
-	mainContentWidget := widgets.NewQWidget(nil, 0)
-	mainContentLayout := widgets.NewQVBoxLayout()
+// Create a new widget for the main content
+func newMainContentWidget() *widgets.QWidget {
+	// Create a new QWidget and QVBoxLayout for the main content widget
+	widget := widgets.NewQWidget(nil, 0)
+	layout := widgets.NewQHBoxLayout()
+	widget.SetLayout(layout)
 
-	// Create a QLabel for the main content
-	mainContentLabel := widgets.NewQLabel2("Main content", nil, 0)
-	mainContentLayout.AddWidget(mainContentLabel, 0, core.Qt__AlignCenter)
+	// Create the buttons for the platforms
+	dockerButton := widgets.NewQPushButton2("Docker", nil)
+	kubernetesButton := widgets.NewQPushButton2("Kubernetes", nil)
+	// Set the buttons to be checkable
+	dockerButton.SetCheckable(true)
+	kubernetesButton.SetCheckable(true)
+	// Set the icons for the buttons
+	dockerButton.SetIcon(gui.NewQIcon5("gui/icons/docker-logo.png"))
+	kubernetesButton.SetIcon(gui.NewQIcon5("gui/icons/kubernetes-logo.png"))
 
-	// Set the layout on the widget
-	mainContentWidget.SetLayout(mainContentLayout)
+	// Set the icon size
+	iconSize := core.NewQSize2(128, 128)
+	dockerButton.SetIconSize(iconSize)
+	kubernetesButton.SetIconSize(iconSize)
 
-	return mainContentWidget
-}
+	// TODO: Disable the button if the platform is not available on the system
+	// kubernetesButton.SetEnabled(false)
+	// dockerButton.SetEnabled(false)
 
-func tipsWidget() *widgets.QWidget {
-	// Create a widget and a layout for the tips
-	tipsWidget := widgets.NewQWidget(nil, 0)
-	tipsLayout := widgets.NewQVBoxLayout()
+	// Set the policy for the size of the buttons to be fixed
+	dockerButton.SetSizePolicy2(widgets.QSizePolicy__Fixed, widgets.QSizePolicy__Fixed)
+	kubernetesButton.SetSizePolicy2(widgets.QSizePolicy__Fixed, widgets.QSizePolicy__Fixed)
 
-	// Create a QLabel for the tips
-	tipsLabel := widgets.NewQLabel2("Tips", nil, 0)
-	tipsLabel.SetStyleSheet("font-size: 16px;")
-	tipsLayout.AddWidget(tipsLabel, 0, 0)
+	// Set the tooltips for the buttons
+	dockerButton.SetToolTip("Install on Docker")
+	kubernetesButton.SetToolTip("Install on Kubernetes")
 
-	// Set the layout on the widget
-	tipsWidget.SetLayout(tipsLayout)
+	// Connect the Toggled signal of each button to a slot that unchecks the other button
+	dockerButton.ConnectToggled(func(checked bool) {
+		if checked {
+			kubernetesButton.SetChecked(false)
+		}
+	})
+	kubernetesButton.ConnectToggled(func(checked bool) {
+		if checked {
+			dockerButton.SetChecked(false)
+		}
+	})
 
-	return tipsWidget
-}
+	// Add the buttons to the layout
+	layout.AddWidget(dockerButton, 0, 0)
+	layout.AddWidget(kubernetesButton, 0, 0)
 
-func stepsWidget() *widgets.QWidget {
-	// Create a layout for the steps
-	stepsWidget := widgets.NewQWidget(nil, 0)
-	stepsLayout := widgets.NewQVBoxLayout()
-
-	// Create a button for each step
-	button1 := widgets.NewQPushButton2("Platform", nil)
-	button2 := widgets.NewQPushButton2("Variables", nil)
-	button3 := widgets.NewQPushButton2("Launch", nil)
-
-	// TODO: Set the size of the buttons to be the same
-
-	// Add the buttons to the steps layout
-	stepsLayout.AddWidget(button1, 0, core.Qt__AlignHCenter|core.Qt__AlignTop)
-	stepsLayout.AddWidget(button2, 0, core.Qt__AlignHCenter|core.Qt__AlignTop)
-	stepsLayout.AddWidget(button3, 0, core.Qt__AlignHCenter|core.Qt__AlignTop)
-
-	// Set the steps layout on the steps widget
-	stepsWidget.SetLayout(stepsLayout)
-
-	// Calculate the fixed height based on the height of the buttons and the spacing of the layout
-	fixedHeight := button1.SizeHint().Height()*3 + stepsLayout.Spacing()*2
-	stepsWidget.SetMaximumHeight(fixedHeight)
-
-	return stepsWidget
-}
-
-func navigationWidget() *widgets.QWidget {
-	// Create a widget and a layout for the navigation buttons
-	navigationWidget := widgets.NewQWidget(nil, 0)
-	navigationLayout := widgets.NewQHBoxLayout()
-
-	// Create the back button
-	backButton := widgets.NewQPushButton2("Back", nil)
-	navigationLayout.AddWidget(backButton, 0, core.Qt__AlignLeft)
-
-	// Create the next button
-	nextButton := widgets.NewQPushButton2("Next", nil)
-	navigationLayout.AddWidget(nextButton, 0, core.Qt__AlignRight)
-
-	// Set the layout on the widget
-	navigationWidget.SetLayout(navigationLayout)
-
-	return navigationWidget
+	return widget
 }
