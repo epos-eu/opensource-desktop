@@ -55,7 +55,7 @@ func getLatestGithubReleaseUrl(system wailsRuntime.EnvironmentInfo) (string, err
 	// Get the latest release
 	client := github.NewClient(nil)
 	// TODO: use the correct owner and repo
-	release, _, err := client.Repositories.GetLatestRelease(context.Background(), "epos-eu", "opensource-docker")
+	release, _, err := client.Repositories.GetLatestRelease(context.Background(), "epos-eu", "opensource-desktop")
 	if err != nil {
 		return "", err
 	}

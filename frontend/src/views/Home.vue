@@ -119,6 +119,9 @@ export default {
 					}).catch((error) => {
 						console.error(error);
 						this.$store.commit('setCheckForUpdatesDone', true);
+						setTimeout(() => {
+							this.isCheckingForUpdate = false;
+						}, 1000);
 					});
 				});
 			}
