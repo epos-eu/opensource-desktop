@@ -13,13 +13,13 @@ jobs:
       fail-fast: false
       matrix:
         build:
-          - name: 'epos-opensource-desktop'
+          - name: 'epos-data-portal-installer'
             platform:  'linux/amd64'
             os: 'ubuntu-latest'
-          - name: 'epos-opensource-desktop'
+          - name: 'epos-data-portal-installer'
             platform:  'windows/amd64'
             os: 'windows-latest'
-          - name: 'epos-opensource-desktop'
+          - name: 'epos-data-portal-installer'
             platform:  'darwin/universal'
             os: 'macos-latest'
 
