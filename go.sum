@@ -13,8 +13,8 @@ github.com/cloudflare/circl v1.3.7/go.mod h1:sRTcRWXGLrKw6yIGJ+l7amYJFfAXbZG0kBS
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
-github.com/epos-eu/opensource-docker v0.0.0-20240305092421-763b79662b2e h1:gJRZi2T8Oeb8GTApdrenCe2W0I7tdqQcQ1bG1NO4UbQ=
-github.com/epos-eu/opensource-docker v0.0.0-20240305092421-763b79662b2e/go.mod h1:E1TpNd8/x5C90cCBGBDtU57fT6cH3nS89x1U/8MAGpc=
+github.com/epos-eu/opensource-docker v0.0.0-20240307140553-ccd72b8b2627 h1:D+7kQ2na6MIZIuYwCLkgbUt9o3KUptIl2hWMdeqjzR8=
+github.com/epos-eu/opensource-docker v0.0.0-20240307140553-ccd72b8b2627/go.mod h1:E1TpNd8/x5C90cCBGBDtU57fT6cH3nS89x1U/8MAGpc=
 github.com/epos-eu/opensource-kubernetes v0.0.0-20240306081058-0ef29520f7df h1:IQo38K3juuWYRkGdbzyx9k7cioQgsH2Gjl2vu40I7Z4=
 github.com/epos-eu/opensource-kubernetes v0.0.0-20240306081058-0ef29520f7df/go.mod h1:kyZumfIpDUw/AyjNBeYp9ukkb64c8E2I5lBTLvZi2kI=
 github.com/go-ole/go-ole v1.2.6 h1:/Fpf6oFPoeFik9ty7siob0G6Ke8QvQEuVcuChpwXzpY=

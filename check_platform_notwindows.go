@@ -32,11 +32,13 @@ func (a *App) IsDockerInstalled() bool {
 		}
 	}
 
-	// Run the commands to see if docker is installed
-	cmds := []string{"docker", "docker-compose"}
-	for _, cmd := range cmds {
-		command := exec.Command(cmd, "--version")
-		_, err := command.Output()
+	// Check if docker is installed
+	// Run "docker compose --version", if it fails, run "docker-compose --version"
+	command := exec.Command("docker", "compose", "--version")
+	err = command.Run()
+	if err != nil {
+		command = exec.Command("docker-compose", "--version")
+		err = command.Run()
 		if err != nil {
 			return false
 		}
