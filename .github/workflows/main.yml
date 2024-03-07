@@ -45,6 +45,6 @@ jobs:
         if: matrix.build.platform != 'darwin/universal' 
         uses: thomasdesr/minisign-action@v1
         with:
-          args: -Sm */bin/* *\bin\*
+          args: -Sm */bin/*
           minisign_key: ${{ secrets.minisign_key }}
           password: ${{ secrets.minisign_password }}
