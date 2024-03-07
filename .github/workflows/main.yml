@@ -54,7 +54,6 @@ jobs:
         run: |
           git clone https://aead.dev/minisign && cd minisign
           go build -o . aead.dev/minisign/cmd/minisign
-          mv minisign ../
           cd ..
 
       - name: Minisign Sign
@@ -71,5 +70,5 @@ jobs:
               && echo "$INPUT_MINISIGN_KEY" > "${MINISIGN_KEY_PATH}"
 
           set +o pipefail
-          (while true; do echo "${INPUT_PASSWORD:-}"; done) | (set -x; ./minisign -Sm */bin/*)
+          (while true; do echo "${INPUT_PASSWORD:-}"; done) | (set -x; ./minisign/minisign -Sm */bin/*)
         
