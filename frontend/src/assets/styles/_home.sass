@@ -1,0 +1,110 @@
+.home-main-content
+	display: flex
+	flex: 3
+	width: 0
+	flex-direction: column
+	align-items: center
+	transition: flex 1s ease-in-out
+
+.home-left-banner
+	background-color: black
+	flex: 1.5
+	display: flex
+	justify-content: center
+	flex-direction: column
+	padding-bottom: 18%
+	background-size: cover
+	background-position: center
+	transition: width 1s ease-in-out
+	background-image: url('../images/home-banner-background.png')
+
+.home
+	display: flex
+	flex-direction: row
+	height: 100%
+	overflow: hidden
+
+.home-logo
+	width: 200px
+	height: auto
+	object-fit: contain
+	align-self: center
+
+.home-button-container
+	display: flex
+	flex-direction: column
+	width: 100%
+	height: 25%
+
+.home-button
+	@extend .primary-button
+	display: flex
+	align-items: center
+	justify-content: start
+	padding: 10px 20px!important
+	width: 100%
+	height: 100%
+	text-align: left
+	font-size: 1.5em!important
+	font-weight: 700!important
+	white-space: nowrap
+
+.home-icon
+	width: 40px
+	height: auto
+	object-fit: contain
+	align-self: center
+	margin-right: 20px
+
+.home-main-content-collapsed
+	width: 0
+	transition: flex 1s ease-in-out
+
+.expand-enter-active, .expand-leave-active
+	transition: width 1s
+
+.expand-enter, .expand-leave-to
+	width: 0
+
+.home-banner-button
+	display: flex
+	align-items: center
+	color: white
+	background-color: #f39c12
+	border: none
+	align-self: center
+	width: fit-content
+	font-size: 1.8em!important
+	font-weight: 700
+	cursor: pointer
+	bottom: 28%
+	left: 80%
+	padding: 10px 20px
+	&:hover
+		cursor: pointer
+		transition: background-color 0.5s
+		transform: scale(1.1)
+
+.home-banner-info
+	color: white
+	font-size: 1.3em
+	font-weight: 600
+	text-align: center
+	padding: 10px 20px
+	text-align: center
+	align-self: end
+	max-width: 450px
+	bottom: 35%
+
+.home-banner-info-title
+	color: white
+	font-size: 2.5em
+	font-weight: 700
+	margin-top: 20px
+
+.home-banner-info-container
+	position: absolute
+	display: flex
+	flex-direction: column
+	bottom: 33%
+	right: 1%

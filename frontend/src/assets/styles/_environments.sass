@@ -1,0 +1,175 @@
+.environments-title
+	@extend .title
+	padding: 0px
+
+.environments-container
+	display: flex
+	flex-direction: row
+	overflow-y: auto
+	gap: 10px
+	flex: 1
+
+.environments-left-container
+	background-image: url('../images/home-banner-background.png')
+	background-size: cover
+	background-position: center
+	display: flex
+	flex: 1.5
+	flex-direction: column
+	background-color: $on-background-color
+	overflow-y: auto
+	padding-top: 20px
+	gap: 10px
+	&::-webkit-scrollbar
+		width: 10px
+	&::-webkit-scrollbar-thumb
+		background: #c0c0c0
+	&::-webkit-scrollbar-thumb:hover
+		background: #989898
+
+.environments-right-container
+	display: flex
+	flex-direction: column
+	padding: 20px
+	flex: 3
+
+.environment-item-container
+	@extend .primary-button
+	display: flex
+	padding: 10px
+	flex-direction: row
+	align-self: center
+	gap: 10px
+	width: 90%
+	&:hover
+		background-color: #cacaca
+
+.environments-list
+	display: flex
+	background: #ffffffee
+	flex: 1
+	overflow-y: auto
+	flex-direction: column
+	margin: 10px
+	// gap: 10px
+	overflow: auto
+
+.environments-list-container
+	display: flex
+	overflow-y: auto
+	overflow-x: hidden
+	flex-direction: column
+	gap: 10px
+	&::-webkit-scrollbar
+		width: 10px
+		height: 10px
+	&::-webkit-scrollbar-thumb
+		background: #b9b9b9
+	&::-webkit-scrollbar-thumb:hover
+		background: #878787
+
+.environments-list-title
+	color: $text-color
+	font-size: 18px
+	padding: 8px
+	font-weight: bold
+	white-space: nowrap
+
+.environment-item
+	display: flex
+	flex-direction: row
+	justify-content: space-between
+	flex: 1
+	gap: 10px
+
+.environments-details-btn
+	background-color: transparent
+	border: none
+	padding: 0
+
+.environments-container-container
+	display: flex
+	flex-direction: column
+	flex: 1
+	height: 100%
+	justify-content: space-between
+
+.environments-tips
+	@extend .description
+	width: fit-content
+	height: fit-content
+	padding: 10px
+	background-color: $on-background-color
+
+.environments-info
+	display: flex
+	flex-direction: column
+	gap: 90px
+	align-items: center
+
+.environments-details-title
+	@extend .title
+	padding: 0px
+	font-size: 1.6em
+	margin: 0px
+	padding: 20px
+
+.environments-details-table
+	border-collapse: collapse
+	color: $text-color
+	td
+		border: 1px solid #c0c0c0
+		padding: 5px
+		background-color: white
+		&:nth-child(odd)
+			background-color: $on-background-color
+			white-space: nowrap
+		&:nth-child(even)
+			width: 100%
+			max-width: 1px	// this is needed to make the table responsive
+			overflow-x: auto
+			white-space: nowrap
+			&::-webkit-scrollbar
+				width: 5px
+				height: 5px
+			&::-webkit-scrollbar-thumb
+				background: #c0c0c0
+			&::-webkit-scrollbar-thumb:hover
+				background: #989898
+
+.selected-environment-item-container
+	transform: scale(1.08)
+	font-weight: bold
+
+.environments-right-container-main-content
+	display: flex
+	flex-direction: column
+	flex: 1
+	gap: 70px
+	overflow-y: auto
+	padding-right: 5px
+	&::-webkit-scrollbar
+		width: 10px
+		height: 10px
+	&::-webkit-scrollbar-thumb
+		background: #c0c0c0
+	&::-webkit-scrollbar-thumb:hover
+		background: #989898
+
+.environments-details
+	display: flex
+	flex-direction: column
+	border: 1px solid black
+	padding: 0 20px 20px 20px
+
+.environments-access-points-button
+	@extend .primary-button
+	width: 300px
+
+.environments-title-space
+	margin-left: 50px
+	margin-right: 10px
+
+.environments-populate-button
+	@extend .primary-button
+	margin-top: 20px

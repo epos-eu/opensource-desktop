@@ -1,0 +1,30 @@
+.populate-main-content-container
+	display: flex
+	flex-direction: column
+	flex: 1
+	gap: 60px
+
+.populate-title
+	@extend .title
+
+.populate-main-content
+	display: flex
+	flex-direction: column
+	align-items: center
+	flex: 1
+	gap: 40px
+.populate-form-field
+	display: flex
+	width: 100%
+	gap: 20px
+	& label
+		color: $text-color
+	& input
+		@extend .input-field
+
+.populate-form
+	display: flex
+	width: 70%
+	align-items: center
+	justify-content: center
+	flex-direction: column

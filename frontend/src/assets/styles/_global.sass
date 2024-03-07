@@ -1,0 +1,82 @@
+.title
+	text-align: center
+	font-weight: 900
+	font-size: 1.7em
+	font-style: bold
+	color: $text-color
+
+.description
+	padding: 10px
+	text-align: center
+	font-size: 1em
+	color: $text-color
+
+.installation-step-title
+	@extend .title
+	font-size: 1.6em
+	margin: 0px
+	padding: 20px
+
+.input-field
+	color: $text-color
+	flex: 2
+	font-size: 0.9em
+	border: none
+	border-bottom: 1px solid grey
+	padding-left: 4px
+	padding-right: 4px
+	&:focus
+		outline: none
+		border-bottom: 1px solid $primary-color
+	&:hover
+		border-bottom: 1px solid $primary-color
+
+.primary-button
+	padding: 7px 18px
+	background-color: transparent
+	color: $text-color
+	font-weight: 500
+	border: none
+	text-decoration: none
+	transition: all 0.2s ease-out
+	text-align: center
+	cursor: pointer
+	font-size: 1.2em
+	&:hover
+		text-shadow: 0px 1px 1px rgba(0, 0, 0, 0.2)
+		background-color: $button-hover-color
+
+.primary-button-inactive
+	@extend .primary-button
+	color: #00000042
+	cursor: default
+	pointer-events: none
+
+.secondary-button
+	@extend .primary-button
+	&:hover
+		background-color: #ff000070
+
+.secondary-button-inactive
+	@extend .primary-button-inactive
+
+.warning
+	color: $text-color
+	background-color: orange
+
+h3
+	color: $text-color
+	font-size: 1.17em
+	font-weight: bold
+	margin: 0px
+
+h1
+	color: $text-color
+	font-size: 2em
+	font-weight: 900
+	margin: 0px
+
+p
+	color: $text-color
+	font-size: 1em
+	font-weight: 360

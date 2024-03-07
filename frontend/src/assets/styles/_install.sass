@@ -1,0 +1,36 @@
+.terminal-output
+	text-align: left
+	overflow: auto
+
+.xterm-viewport
+	overflow: auto
+	// scroll bar
+	&::-webkit-scrollbar
+		width: 10px
+	&::-webkit-scrollbar-thumb
+		background-color: #898989
+
+.install-title
+	@extend .title
+
+.install-main-content-container
+	display: flex
+	flex-direction: column
+	overflow: auto
+	flex: 1
+	gap: 40px
+
+.install-main-content
+	overflow: auto
+	background-color: #111111
+	padding: 10px
+
+.install-navigation-container
+	display: flex
+	justify-content: space-between
+	width: 100%
+
+.install-container
+	display: flex
+	flex-direction: column
+	height: 100%

@@ -1,0 +1,61 @@
+.platform-main-content
+	color: $text-color
+	display: flex
+	flex-direction: column
+	justify-content: space-between
+	width: 100%
+	flex: 1
+
+.platform-main-content-container
+	display: flex
+	flex: 1
+	flex-direction: column
+	justify-content: space-between
+	align-items: center
+	width: 100%
+	gap: 15%
+
+.platform-button
+	width: fit-content
+	height: fit-content
+	background-color: transparent
+	border: none
+	cursor: pointer
+	align-self: center
+
+.platform-button-image
+	width: 12vw
+	height: auto
+	transition: transform 0.3s ease
+	&:hover
+		transform: scale(1.1)
+
+.platform-title
+	@extend .title
+	margin-bottom: 40px
+
+.grayed-out
+	opacity: 0.5
+
+.platform-warning-message
+	@extend .warning
+	display: flex
+	flex-direction: row
+	align-items: center
+	justify-content: space-between
+	gap: 20px
+	padding: 10px
+
+.platform-main-content-warnings-container
+	display: flex
+	flex-direction: column
+	width: fit-content
+	align-self: center
+	gap: 20px
+
+.platform-main-content-buttons-container
+	display: flex
+	flex-direction: row
+	justify-content: center
+	width: 100%
+	gap: 12%

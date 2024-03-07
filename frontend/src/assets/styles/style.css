@@ -1,0 +1,23 @@
+html {
+    text-align: center;
+}
+
+body {
+    margin: 0;
+    color: white;
+    background-color: black;
+    font-family: "Open Sans", "Nunito Sans", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+    font-variation-settings:
+        "wdth" 100,
+        "YTLC" 500;
+}
+
+/* @font-face {
+    font-family: "Nunito";
+    font-style: normal;
+    font-weight: 400;
+    src: local(""),
+        url("assets/fonts/nunito-v16-latin-regular.woff2") format("woff2");
+} */

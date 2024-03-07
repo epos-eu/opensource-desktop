@@ -1,0 +1,71 @@
+.variables-title
+	@extend .title
+
+.variables-main-content-container
+	display: flex
+	flex-direction: column
+	flex: 1
+	gap: 20px
+
+.variables-main-content
+	overflow-y: auto
+	max-height: 77.9vh
+	background: $background-color
+	&::-webkit-scrollbar
+		width: 10px
+	&::-webkit-scrollbar-thumb
+		background: #c0c0c0
+	&::-webkit-scrollbar-thumb:hover
+		background: #989898
+
+.variables-section-title
+	@extend .title
+	font-size: 1.3em
+	margin: 0px
+	padding: 10px
+
+.variables-label
+	@extend .description
+	font-size: 0.8em
+	margin: 0px
+	padding: 10px
+	flex: 1
+	text-align: left
+
+.variables-section-container
+	display: flex
+	justify-content: space-between
+	position: relative
+
+.variables-input
+	@extend .input-field
+	margin: 10px
+	flex: 2
+
+.variables-checkbox-container
+	display: flex
+	flex-direction: row
+	flex: 2
+
+.variables-checkbox
+	align-self: center
+	width: 16px
+	height: 16px
+	// border-width: 2px
+	// border-radius: 2px
+	// border-color: #0000008a
+	border: 2px solid #0000008a
+
+.tooltiptext
+	@extend .warning
+	width: fit-content
+	position: absolute
+	padding: 5px 10px
+	z-index: 1
+	bottom: 80%
+	left: 50%
+	margin-left: -13em
+
+.variables-kubernetes-ip-container
+	display: flex
+	flex-direction: row

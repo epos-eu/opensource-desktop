@@ -1,0 +1,48 @@
+.dialog
+	display: flex
+	flex-direction: column
+	padding: 20px
+	color: $text-color
+	background-color: white
+
+.dialog-overlay
+	position: fixed
+	top: 0
+	left: 0
+	width: 100%
+	height: 100%
+	background-color: rgba(0, 0, 0, 0.5)
+	z-index: 1000
+	display: flex
+	justify-content: center
+	align-items: center
+
+.dialog-text
+	@extend .description
+	padding: 0
+
+.dialog-confirm-button
+	@extend .primary-button
+	min-width: 100px
+
+.dialog-cancel-button
+	@extend .secondary-button
+	min-width: 100px
+
+.dialog-content
+	display: flex
+	gap: 20px
+	justify-content: center
+	margin-top: 20px
+
+.dialog-button-positive
+	&:hover
+		background-color: $button-hover-color
+
+.dialog-button-negative
+	&:hover
+		background-color: #ff000070
+
+.dialog-title
+	@extend h3
+	margin-bottom: 15px

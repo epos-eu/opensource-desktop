@@ -1,0 +1,53 @@
+.about-left-banner
+	@extend .home-left-banner
+
+.about
+	display: flex
+	flex-direction: row
+	height: 100%
+	width: 100%
+	overflow-y: auto
+
+.about-main-content
+	padding: 20px 20px 0 20px	// t r b l
+	overflow-y: auto
+	width: 100%
+	box-sizing: border-box
+	&::-webkit-scrollbar
+		width: 10px
+		height: 10px
+	&::-webkit-scrollbar-thumb
+		background: #c0c0c0
+	&::-webkit-scrollbar-thumb:hover
+		background: #989898
+
+.about-main-content-container
+	@extend .home-main-content
+	box-sizing: border-box
+	text-align: left
+	display: flex
+	flex-direction: column
+	justify-content: space-between
+
+.about-back-button
+	@extend .primary-button
+
+.about-back-button-container
+	display: flex
+	flex-direction: row
+	align-self: flex-start
+	padding: 0 0 20px 20px	// t r b l
+
+.about-link-container
+	display: flex
+	flex-direction: row
+	align-self: center
+	justify-content: space-between
+
+.about-paragraph
+	text-align: left
+	font-size: 1em
+	color: $text-color
+
+.about-button
+	@extend .primary-button
