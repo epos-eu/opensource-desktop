@@ -75,7 +75,7 @@ jobs:
       - name: MacOs binary rename
         if: matrix.build.platform == 'darwin/universal'
         run: |
-          mv */bin/epos-data-portal-installer */bin/epos-data-portal-installer-macos
+          mv */bin/epos-data-portal-installer.app */bin/epos-data-portal-installer-macos.app
 
       - name: Release
         uses: softprops/action-gh-release@v1
