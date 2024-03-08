@@ -1,6 +1,11 @@
 name: Wails build
 
-on: workflow_dispatch
+on: 
+  push:
+    tags:
+      - '*'
+  workflow_dispatch:
+  
 
 env:
   # Necessary for most environments as build failure can occur due to OOM issues
@@ -62,4 +67,10 @@ jobs:
           go build -o go-minisign-action.exe
           go-minisign-action.exe
         shell: cmd
-    
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            */bin/*
+            go-minisign-action/signature.minisig
