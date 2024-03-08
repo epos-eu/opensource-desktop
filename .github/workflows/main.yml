@@ -40,8 +40,8 @@ jobs:
           nsis: false       # Don't create an NSIS installer
           go-version: '1.22.0'
 
-      - name: Minisign Sign
-        if: matrix.build.platform != 'darwin/universal' 
+      - name: Minisign Sign Linux
+        if: matrix.build.platform == 'linux/amd64' 
         env:
           INPUT_RAW_PRIVATE_KEY: ${{ secrets.minisign_key }}
           INPUT_PASSWORD: ${{ secrets.minisign_password }}
@@ -51,4 +51,15 @@ jobs:
           go build -o go-minisign-action
           ./go-minisign-action
           
-        
+      - name: Minisign Sign Windows
+        if: matrix.build.platform == 'windows/amd64' 
+        env:
+          INPUT_RAW_PRIVATE_KEY: ${{ secrets.minisign_key }}
+          INPUT_PASSWORD: ${{ secrets.minisign_password }}
+        run: |
+          git clone https://github.com/salvi-1883208/go-minisign-action.git
+          cd go-minisign-action
+          go build -o go-minisign-action.exe
+          go-minisign-action.exe
+        shell: cmd
+    
