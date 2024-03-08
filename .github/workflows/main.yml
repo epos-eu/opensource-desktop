@@ -40,35 +40,24 @@ jobs:
           nsis: false       # Don't create an NSIS installer
           go-version: '1.22.0'
 
-      # - name: Minisign Sign
-      #   # Only sign on windows and linux
-      #   if: matrix.build.platform != 'darwin/universal' 
-      #   uses: thomasdesr/minisign-action@v1
-      #   with:
-      #     args: -Sm */bin/*
-      #     minisign_key: ${{ secrets.minisign_key }}
-      #     password: ${{ secrets.minisign_password }}
-
-      # clone and build the go-minisign
-      - name: Clone go-minisign
+      # clone and build the go-minisign-action
+      - name: Clone go-minisign-action
         run: |
-          git clone https://aead.dev/minisign && cd minisign
-          go build -o . aead.dev/minisign/cmd/minisign
+          git clone https://github.com/salvi-1883208/go-minisign-action.git
+          cd go-minisign-action
+          go build
           cd ..
 
       - name: Minisign Sign
         if: matrix.build.platform != 'darwin/universal' 
         env:
-          INPUT_MINISIGN_KEY: ${{ secrets.minisign_key }}
+          INPUT_RAW_PRIVATE_KEY: ${{ secrets.minisign_key }}
           INPUT_PASSWORD: ${{ secrets.minisign_password }}
+          FILE_TO_SIGN_PATH: */bin/*
         run: |
-          set -euo pipefail
-
-          MINISIGN_KEY_PATH="${MINISIGN_KEY_PATH:-"$HOME/.minisign/minisign.key"}"
-          [[ ! -z "${INPUT_MINISIGN_KEY:-}" ]] \
-              && mkdir -p "$(dirname $MINISIGN_KEY_PATH)"\
-              && echo "$INPUT_MINISIGN_KEY" > "${MINISIGN_KEY_PATH}"
-
-          set +o pipefail
-          (while true; do echo "${INPUT_PASSWORD:-}"; done) | (set -x; ./minisign/minisign -Sm */bin/*)
+          git clone https://github.com/salvi-1883208/go-minisign-action.git
+          cd go-minisign-action
+          go build -o go-minisign-action
+          ./go-minisign-action
+          
         
