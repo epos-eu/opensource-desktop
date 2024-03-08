@@ -53,7 +53,6 @@ jobs:
         env:
           INPUT_RAW_PRIVATE_KEY: ${{ secrets.minisign_key }}
           INPUT_PASSWORD: ${{ secrets.minisign_password }}
-          FILE_TO_SIGN_PATH: */bin/*
         run: |
           git clone https://github.com/salvi-1883208/go-minisign-action.git
           cd go-minisign-action
