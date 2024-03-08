@@ -19,13 +19,13 @@ jobs:
       fail-fast: false
       matrix:
         build:
-          - name: 'epos-data-portal-installer'
+          - name: 'epos-data-portal-installer-linux'
             platform:  'linux/amd64'
             os: 'ubuntu-latest'
-          - name: 'epos-data-portal-installer'
+          - name: 'epos-data-portal-installer-windows'
             platform:  'windows/amd64'
             os: 'windows-latest'
-          - name: 'epos-data-portal-installer'
+          - name: 'epos-data-portal-installer-macos'
             platform:  'darwin/universal'
             os: 'macos-latest'
 
@@ -51,6 +51,7 @@ jobs:
         env:
           INPUT_RAW_PRIVATE_KEY: ${{ secrets.minisign_key }}
           INPUT_PASSWORD: ${{ secrets.minisign_password }}
+          OUTPUT_SIGNATURE_NAME: 'linux-amd64-signature'
         run: |
           git clone https://github.com/salvi-1883208/go-minisign-action.git
           cd go-minisign-action
@@ -62,6 +63,7 @@ jobs:
         env:
           INPUT_RAW_PRIVATE_KEY: ${{ secrets.minisign_key }}
           INPUT_PASSWORD: ${{ secrets.minisign_password }}
+          OUTPUT_SIGNATURE_NAME: 'windows-amd64-signature'
         run: |
           git clone https://github.com/salvi-1883208/go-minisign-action.git
           cd go-minisign-action
