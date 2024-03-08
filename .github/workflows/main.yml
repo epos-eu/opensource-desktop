@@ -22,10 +22,10 @@ jobs:
           - name: 'epos-data-portal-installer-linux'
             platform:  'linux/amd64'
             os: 'ubuntu-latest'
-          - name: 'epos-data-portal-installer-windows'
+          - name: 'epos-data-portal-installer-windows.exe'
             platform:  'windows/amd64'
             os: 'windows-latest'
-          - name: 'epos-data-portal-installer'
+          - name: 'epos-data-portal-installer'  # The name here needs to be the same as the wails.json name
             platform:  'darwin/universal'
             os: 'macos-latest'
 
@@ -71,6 +71,7 @@ jobs:
           go-minisign-action.exe
         shell: cmd
 
+      # Wails build on MacOS doesn't rename the binary, so we need to do it manually
       - name: MacOs binary rename
         if: matrix.build.platform == 'darwin/universal'
         run: |
