@@ -37,7 +37,7 @@ jobs:
           submodules: recursive
 
       - name: Build wails
-        uses: Marco-Salvi/wails-build-action@0.0.1
+        uses: Marco-Salvi/wails-build-action@0.0.2
         id: build
         with:
           build-name: ${{ matrix.build.name }}
