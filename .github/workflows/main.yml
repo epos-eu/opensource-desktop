@@ -69,13 +69,14 @@ jobs:
           cd go-minisign-action
           go build -o go-minisign-action.exe
           go-minisign-action.exe
+          cd ..
         shell: cmd
 
       # Wails build on MacOS doesn't rename the binary, so we need to do it manually
       - name: MacOs binary rename
         if: matrix.build.platform == 'darwin/universal'
         run: |
-          mv */bin/epos-data-portal-installer.app */bin/epos-data-portal-installer-macos.app
+          mv build/bin/epos-data-portal-installer.app build/bin/epos-data-portal-installer-macos.app
 
       - name: Release
         uses: softprops/action-gh-release@v1
