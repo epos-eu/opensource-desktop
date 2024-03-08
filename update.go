@@ -13,10 +13,11 @@ import (
 	wailsRuntime "github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
-const VERSION = "0.0.1"
-
-const PUBLIC_KEY = `untrusted comment: minisign public key: E106E938CD763C05
+const (
+	VERSION    = "0.0.2"
+	PUBLIC_KEY = `untrusted comment: minisign public key: E106E938CD763C05
 RWQFPHbNOOkG4bXw9P9+wzRhQLwNcBZdgn94TCJyaY7e7CyBYzXXXktB`
+)
 
 // Check if there is a new version of the app available and return the url to download it, empty string if there is no update
 func (a *App) CheckForUpdates() bool {
