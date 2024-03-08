@@ -1,5 +1,5 @@
 <script>
-import { IsInternetConnected, CheckForUpdates, DoUpdate } from '../../wailsjs/go/main/App'
+import { IsInternetConnected, CheckForUpdates, DoUpdate, GetReleaseUrl } from '../../wailsjs/go/main/App'
 import { BrowserOpenURL, Environment, Quit } from '../../wailsjs/runtime/runtime'
 import ConfirmDialog from '../components/Dialog.vue'
 import LoadingSpinner from '../components/LoadingSpinner.vue'
@@ -13,7 +13,6 @@ export default {
 	},
 	data() {
 		return {
-			updateUrl: "https://github.com/",
 			macDialog: {
 				show: false,
 				text: "There is a new version available. Do you want to download it?",
@@ -32,9 +31,16 @@ export default {
 				confirm: { show: true, text: 'OK', },
 				cancel: null,
 			},
+			updateErrorDialog: {
+				show: false,
+				text: "An error occurred while updating. Please try again later.",
+				confirm: { show: true, text: 'OK', },
+				cancel: null,
+			},
 			isCheckingForUpdate: false,
 			isUpdating: false,
 			bannerInfoText,
+			macUpdateUrl: ""
 		};
 	},
 	computed: {
@@ -63,16 +69,15 @@ export default {
 		updateConfirm() {
 			this.updateDialog.show = false;
 			this.isUpdating = true;
-			DoUpdate(this.updateUrl).then(() => {
-				// Hide the loading spinner after 1 second
-				setTimeout(() => {
-					this.isUpdating = false;
-					// If the update was successful, show the update dialog
-					this.updateFinishedDialog.show = true;
-				}, 1000);
+			DoUpdate().then(() => {
+				this.isUpdating = false;
+				// If the update was successful, show the update dialog
+				this.updateFinishedDialog.show = true;
 			}).catch((error) => {
 				console.error(error);
-				this.updateFinishedDialog.show = true;
+				this.isUpdating = false;
+				// Show the error dialog
+				this.updateErrorDialog.show = true;
 			});
 		},
 		updateCancel() {
@@ -82,7 +87,10 @@ export default {
 			this.macDialog.show = false;
 		},
 		macConfirm() {
-			BrowserOpenURL(this.updateUrl);
+			BrowserOpenURL(this.macUpdateUrl);
+		},
+		updateErrorConfirm() {
+			this.updateErrorDialog.show = false;
 		},
 		updateFinishedConfirm() {
 			this.updateFinishedDialog.show = false;
@@ -95,34 +103,38 @@ export default {
 
 			// Check if the check for updates has already been done
 			if (!this.$store.state.checkForUpdatesDone) {
-
-				Environment().then((systemEnvironment) => {
-					this.isCheckingForUpdate = true;
-					// Check for updates
-					CheckForUpdates(systemEnvironment).then((updateUrl) => {
-						// Hide the loading spinner after 1 second
-						setTimeout(() => {
-							this.isCheckingForUpdate = false;
-							// Set the flag for updates done to true
-							this.$store.commit('setCheckForUpdatesDone', true);
-							// If there is an update available
-							if (updateUrl !== "") {
-								this.updateUrl = updateUrl;
+				// Set the flag for the spinner
+				this.isCheckingForUpdate = true;
+				// Check for updates
+				CheckForUpdates().then((updateAvailable) => {
+					console.log("Update available");
+					// Hide the loading spinner after 1 second
+					setTimeout(() => {
+						this.isCheckingForUpdate = false;
+						// Set the flag for updates done to true
+						this.$store.commit('setCheckForUpdatesDone', true);
+						// If there is an update available
+						if (updateAvailable) {
+							// Get the system environment
+							Environment().then((systemEnvironment) => {
 								// If the user is on a Mac, show the Mac dialog
 								if (systemEnvironment.platform === "darwin") {
-									this.macDialog.show = true;
+									GetReleaseUrl().then((releaseUrl) => {
+										this.macUpdateUrl = releaseUrl;
+										this.macDialog.show = true;
+									});
 								} else {
 									this.updateDialog.show = true;
 								}
-							}
-						}, 1000);
-					}).catch((error) => {
-						console.error(error);
-						this.$store.commit('setCheckForUpdatesDone', true);
-						setTimeout(() => {
-							this.isCheckingForUpdate = false;
-						}, 1000);
-					});
+							});
+						}
+					}, 1000);
+				}).catch((error) => {
+					console.error(error);
+					this.$store.commit('setCheckForUpdatesDone', true);
+					setTimeout(() => {
+						this.isCheckingForUpdate = false;
+					}, 1000);
 				});
 			}
 		},
@@ -145,6 +157,9 @@ export default {
 	<ConfirmDialog v-if="updateFinishedDialog.show" @confirm="updateFinishedConfirm" :text="updateFinishedDialog.text"
 		:title="'Update finished'" :confirmButton="updateFinishedDialog.confirm"
 		:cancelButton="updateFinishedDialog.cancel" />
+		<!-- Update error dialog -->
+	<ConfirmDialog v-if="updateErrorDialog.show" @confirm="updateErrorConfirm" :text="updateErrorDialog.text" :title="'Error while updating'"
+		:confirmButton="updateErrorDialog.confirm" :cancelButton="updateErrorDialog.cancel" />
 	<div class="home">
 		<div class="home-left-banner">
 			<!-- The logo -->
