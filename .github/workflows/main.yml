@@ -25,7 +25,7 @@ jobs:
           - name: 'epos-data-portal-installer-windows'
             platform:  'windows/amd64'
             os: 'windows-latest'
-          - name: 'epos-data-portal-installer-macos'
+          - name: 'epos-data-portal-installer'
             platform:  'darwin/universal'
             os: 'macos-latest'
 
@@ -53,7 +53,7 @@ jobs:
           INPUT_PASSWORD: ${{ secrets.minisign_password }}
           OUTPUT_SIGNATURE_NAME: 'linux-amd64-signature'
         run: |
-          git clone https://github.com/salvi-1883208/go-minisign-action.git
+          git clone https://github.com/Marco-Salvi/go-minisign-action.git
           cd go-minisign-action
           go build -o go-minisign-action
           ./go-minisign-action
@@ -65,15 +65,20 @@ jobs:
           INPUT_PASSWORD: ${{ secrets.minisign_password }}
           OUTPUT_SIGNATURE_NAME: 'windows-amd64-signature'
         run: |
-          git clone https://github.com/salvi-1883208/go-minisign-action.git
+          git clone https://github.com/Marco-Salvi/go-minisign-action.git
           cd go-minisign-action
           go build -o go-minisign-action.exe
           go-minisign-action.exe
         shell: cmd
+
+      - name: MacOs binary rename
+        if: matrix.build.platform == 'darwin/universal'
+        run: |
+          mv */bin/epos-data-portal-installer */bin/epos-data-portal-installer-macos
 
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
           files: |
             */bin/*
-            go-minisign-action/signature.minisig
+            go-minisign-action/*.minisig
