@@ -1,19 +1,65 @@
-# README
+# EPOS Data Portal Installer
+
+## Introduction
+
+EPOS Data Portal Installer is a user-friendly desktop application designed for the local installation of EPOS environments using Docker or Kubernetes. It simplifies the process by providing a graphical interface for the [EPOS Open Source - Docker installer](https://github.com/epos-eu/opensource-docker) and [EPOS Open Source - Kubernetes installer](https://github.com/epos-eu/opensource-kubernetes) CLI tools.
+
+## Usage
+
+Download the installer or executable for your specific system from the [latest release page](https://github.com/epos-eu/opensource-desktop/releases/latest).
+
+| Operating System | Asset | Description |
+| --- | --- | --- |
+| Windows | `epos-data-portal-installer-windows.exe` | Executable |
+| MacOS | `epos-data-portal-installer-macos.app.zip` | Application in a `.app` zip |
+| MacOS | `epos-data-portal-installer-macos.pkg` | `Pkg` installer for the application |
+| Linux | `epos-data-portal-installer-linux` | Linux executable |
+
+**Note:** Some systems or browsers may flag the download due to a lack of code signing. Future releases aim to address this issue.
+
+**Linux:** At present, there is a challenge with building a universal Linux binary that can run on all distributions. If you encounter issues running the binary, consider building directly from source.
 
 ## About
 
-This is the official Wails Vue template.
+The application is built using the [Wails](https://wails.io/) framework, seamlessly combining Go and Vue.js for desktop application development.
 
-You can configure the project by editing `wails.json`. More information about the project settings can be found
-here: https://wails.io/docs/reference/project-config
+- **Frontend:** Vue.js with VueRouter and Vuex for routing and state management.
+- **Backend:** Go wraps around Docker and Kubernetes CLI tools, providing a user-friendly interface.
 
-## Live Development
+Key Go libraries used:
 
-To run in live development mode, run `wails dev` in the project directory. This will run a Vite development
-server that will provide very fast hot reload of your frontend changes. If you want to develop in a browser
-and have access to your Go methods, there is also a dev server that runs on http://localhost:34115. Connect
-to this in your browser, and you can call your Go code from devtools.
+- [minio/selfudate](https://github.com/minio/selfupdate): Facilitates self-updating functionality.
+- [wailsapp/wails](https://github.com/wailsapp/wails): Essential for creating the application and using the Wails Go runtime.
+- [mattn/go-sqlite3](https://github.com/mattn/go-sqlite3): Manages user-created environments.
 
-## Building
+## Development
 
-To build a redistributable, production mode package, use `wails build`.
+Set up your development environment by following the official [Wails guide](https://wails.io/docs/gettingstarted/installation).
+
+## Contributing
+
+If you want to contribute to a project and make it better, your help is very welcome. Contributing is also a great way to learn more about social coding on Github, new technologies and and their ecosystems and how to make constructive, helpful bug reports, feature requests and the noblest of all contributions: a good, clean pull request.
+
+### How to make a clean pull request
+
+Look for a project's contribution instructions. If there are any, follow them.
+
+- Create a personal fork of the project on Github/GitLab.
+- Clone the fork on your local machine. Your remote repo on Github/GitLab is called `origin`.
+- Add the original repository as a remote called `upstream`.
+- If you created your fork a while ago be sure to pull upstream changes into your local repository.
+- Create a new branch to work on! Branch from `develop` if it exists, else from `master` or  `main`.
+- Implement/fix your feature, comment your code.
+- Follow the code style of the project, including indentation.
+- If the project has tests run them!
+- Write or adapt tests as needed.
+- Add or change the documentation as needed.
+- Squash your commits into a single commit with git's [interactive rebase](https://help.github.com/articles/interactive-rebase). Create a new branch if necessary.
+- Push your branch to your fork on Github/GitLab, the remote `origin`.
+- From your fork open a pull request in the correct branch. Target the project's `develop` branch if there is one, else go for `master` or  `main`!
+- …
+- If the maintainer requests further changes just push them to your branch. The PR will be updated automatically.
+- Once the pull request is approved and merged you can pull the changes from `upstream` to your local repo and delete
+your extra branch(es).
+
+And last but not least: Always write your commit messages in the present tense. Your commit message should describe what the commit, when applied, does to the code – not what you did to the code.
