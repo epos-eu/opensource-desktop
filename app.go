@@ -77,7 +77,7 @@ func (e Environment) Equals(other Environment) bool {
 }
 
 func (a *App) GetVersion() string {
-	return Version
+	return VERSION
 }
 
 // Checks if an environment is installed:
