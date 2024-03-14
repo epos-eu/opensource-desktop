@@ -12,8 +12,6 @@ import (
 	"os"
 	"strings"
 
-	// dockerCmd "github.com/epos-eu/opensource-docker/cmd"
-
 	wailsRuntime "github.com/wailsapp/wails/v2/pkg/runtime"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -33,12 +31,14 @@ func (a *App) InstallEnvironment(platform string, environmentSetup EnvironmentSe
 	fmt.Println("SkipImagesAutoupdate: ", skipImagesAutoupdate)
 	fmt.Println("IsEdit: ", isEdit)
 
+	// Set the flag for the auto update of the images
+	autoUpdateImages := !skipImagesAutoupdate
 	var err error
 	var accessPoints EposAccessPoints
 
 	// TODO run the install script
 	if platform == "docker" {
-		err = a.installDockerEnvironment(environmentSetup, variables, skipImagesAutoupdate, isEdit)
+		err = a.installDockerEnvironment(environmentSetup, variables, autoUpdateImages, isEdit)
 
 		// Build the access points strings
 		accessPoints = EposAccessPoints{
@@ -46,7 +46,7 @@ func (a *App) InstallEnvironment(platform string, environmentSetup EnvironmentSe
 			ApiGateway: "http://" + os.Getenv("API_HOST_ENV") + ":" + os.Getenv("API_PORT") + os.Getenv("DEPLOY_PATH") + os.Getenv("API_PATH") + "/ui/",
 		}
 	} else if platform == "kubernetes" {
-		err = a.installKubernetesEnvironment(environmentSetup, variables, skipImagesAutoupdate, isEdit)
+		err = a.installKubernetesEnvironment(environmentSetup, variables, autoUpdateImages, isEdit)
 
 		// Build the access points strings
 		accessPoints = EposAccessPoints{
@@ -93,7 +93,7 @@ func (a *App) InstallEnvironment(platform string, environmentSetup EnvironmentSe
 	return nil
 }
 
-func (a *App) installDockerEnvironment(environmentSetup EnvironmentSetup, variables []Section, skipImagesAutoupdate bool, isEdit bool) error {
+func (a *App) installDockerEnvironment(environmentSetup EnvironmentSetup, variables []Section, autoUpdateImages bool, isEdit bool) error {
 	// Generate a temporary file with the environment variables
 	envTempFilePath, err := generateTempFile(os.TempDir(), "configurations", variablesToBinary(variables))
 	if err != nil {
@@ -111,13 +111,13 @@ func (a *App) installDockerEnvironment(environmentSetup EnvironmentSetup, variab
 	go func() {
 		// Run the docker command
 		err := dockerMethods.CreateEnvironment(
-			envTempFilePath,                         // the file with the environment variables
-			"",                                      // the docker-compose file
-			"",                                      // external ip
-			environmentSetup.Name,                   // the name of the environment
-			environmentSetup.Version,                // the version of the environment
-			fmt.Sprintf("%t", isEdit),               // if the environment is being edited/updated
-			fmt.Sprintf("%t", skipImagesAutoupdate), // if the images should be updated
+			envTempFilePath,                     // the file with the environment variables
+			"",                                  // the docker-compose file
+			"",                                  // external ip
+			environmentSetup.Name,               // the name of the environment
+			environmentSetup.Version,            // the version of the environment
+			fmt.Sprintf("%t", isEdit),           // if the environment is being edited/updated
+			fmt.Sprintf("%t", autoUpdateImages), // if the images should be updated
 		)
 
 		// back to normal state
@@ -141,7 +141,7 @@ func (a *App) installDockerEnvironment(environmentSetup EnvironmentSetup, variab
 	return err
 }
 
-func (a *App) installKubernetesEnvironment(environmentSetup EnvironmentSetup, variables []Section, skipImagesAutoupdate bool, isEdit bool) error {
+func (a *App) installKubernetesEnvironment(environmentSetup EnvironmentSetup, variables []Section, autoUpdateImages bool, isEdit bool) error {
 	// Generate a temporary file with the environment variables
 	envTempFilePath, err := generateTempFile(os.TempDir(), "configurations", variablesToBinary(variables))
 	if err != nil {
@@ -158,12 +158,12 @@ func (a *App) installKubernetesEnvironment(environmentSetup EnvironmentSetup, va
 	go func() {
 		// Run the kubernetes command
 		err := kubernetesMethods.CreateEnvironment(
-			envTempFilePath,                         // the file with the environment variables
-			environmentSetup.Context,                // the context
-			environmentSetup.Name,                   // the namespace
-			environmentSetup.Version,                // the version of the environment
-			fmt.Sprintf("%t", skipImagesAutoupdate), // if the images should be updated
-			fmt.Sprintf("%t", isEdit),               // if the environment is being edited/updated
+			envTempFilePath,                     // the file with the environment variables
+			environmentSetup.Context,            // the context
+			environmentSetup.Name,               // the namespace
+			environmentSetup.Version,            // the version of the environment
+			fmt.Sprintf("%t", autoUpdateImages), // if the images should be updated
+			fmt.Sprintf("%t", isEdit),           // if the environment is being edited/updated
 		)
 
 		w.Close()
