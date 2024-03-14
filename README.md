@@ -17,7 +17,7 @@ Download the installer or executable for your specific system from the [latest r
 
 **Note:** Some systems or browsers may flag the download due to a lack of code signing. Future releases aim to address this issue.
 
-**Linux:** At present, there is a challenge with building a universal Linux binary that can run on all distributions. If you encounter issues running the binary, consider building directly from source.
+**Linux:** At present, there is a challenge with building a universal Linux binary that can run on all distributions. If you encounter issues running the binary, consider building directly from source. See [here](https://github.com/wailsapp/wails/issues/2998) for more information about this particular issue.
 
 ## About
 

@@ -1,8 +1,15 @@
-# Vue 3 + Vite
+# Frontend
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs,
-check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+The frontend is built using Vue.js with VueRouter and Vuex for routing and state management.
 
-## Recommended IDE Setup
+## Structure
 
-- [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar)
+In the `src` directory, you will find the following:
+
+- `assets/`: Images, fonts, and other assets.
+- `components/`: Custom Vue components used throughout the application.
+- `views/`: The main views for the application.
+- `router.js`: VueRouter configuration.
+- `store.js`: Vuex store configuration.
+
+**Note:** Right now the frontend is still in development and kind of a mess. We are working on cleaning it up and making it more modular.
