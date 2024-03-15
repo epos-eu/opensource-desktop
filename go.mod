@@ -54,5 +54,3 @@ require (
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/protobuf v1.28.0 // indirect
 )
-
-// replace github.com/wailsapp/wails/v2 v2.8.0 => C:\Users\Mykra\go\pkg\mod
