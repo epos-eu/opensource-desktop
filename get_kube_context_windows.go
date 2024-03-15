@@ -5,6 +5,7 @@ package main
 
 import (
 	"bufio"
+	"fmt"
 	"os/exec"
 	"syscall"
 )
@@ -34,6 +35,11 @@ func (a *App) GetKubernetesContexts() ([]string, error) {
 	}
 	if err := scanner.Err(); err != nil {
 		return contexts, err
+	}
+
+	// If the contexts are empty, return an error
+	if len(contexts) == 0 {
+		return contexts, fmt.Errorf("no contexts found")
 	}
 
 	return contexts, nil

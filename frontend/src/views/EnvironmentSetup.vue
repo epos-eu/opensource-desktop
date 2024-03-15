@@ -24,7 +24,8 @@ export default {
 			tips,
 			warning: false,
 			contexts: null,
-			loadingContexts: false
+			loadingContexts: false,
+			errorLoadingContexts: false,
 		};
 	},
 	computed: {
@@ -129,14 +130,8 @@ export default {
 			IsEnvironmentInstalled(this.name, this.version, this.platform, this.context).then((result) => {
 				this.warning = result;
 			});
-		}
-	},
-	mounted() {
-		// Check if the environment already exists
-		this.isEnvironmentInstalled();
-
-		// If the platform is kubernetes, get the contexts
-		if (this.platform === 'kubernetes') {
+		},
+		loadContexts() {
 			// Set the loading spinner
 			this.loadingContexts = true;
 			// Get the contexts
@@ -149,7 +144,28 @@ export default {
 				setTimeout(() => {
 					this.loadingContexts = false;
 				}, 1000);
+			}).catch((error) => {
+				console.error(error);
+				setTimeout(() => {
+					// Remove the loading spinner
+					this.loadingContexts = false;
+
+					// Show an error message
+					this.errorLoadingContexts = true;
+
+					// Disable the next button
+					this.navigation.next.disabled = true;
+				}, 1000);
 			});
+		}
+	},
+	mounted() {
+		// Check if the environment already exists
+		this.isEnvironmentInstalled();
+
+		// If the platform is kubernetes, get the contexts
+		if (this.platform === 'kubernetes') {
+			this.loadContexts();
 		}
 	}
 };
@@ -190,6 +206,12 @@ export default {
 				<p v-if="warning" class="environment-setup-warning">
 					An environment with the same name and version already exists. Please choose a different name or
 					version.
+				</p>
+				<p v-if="errorLoadingContexts" class="environment-setup-warning">
+					Error loading the Kubernetes contexts.
+					<button @click="loadContexts" class="primary-button">
+						Try again
+					</button>
 				</p>
 			</div>
 		</div>
