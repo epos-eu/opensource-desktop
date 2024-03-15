@@ -50,7 +50,7 @@ func (a *App) DoUpdate() error {
 	}
 	defer resp.Body.Close()
 
-	// Convert the body to a byte array to verify its signature
+	// Read the body into a byte array to verify its signature
 	binary := make([]byte, 0)
 	for {
 		buf := make([]byte, 1024)
@@ -84,8 +84,11 @@ func (a *App) DoUpdate() error {
 		return err
 	}
 
+	// Create a reader for the binary (needed for selfupdate.Apply)
+	binaryReader := strings.NewReader(string(binary))
+
 	// If the signature is valid, apply the update
-	err = selfupdate.Apply(resp.Body, selfupdate.Options{})
+	err = selfupdate.Apply(binaryReader, selfupdate.Options{})
 	if err != nil {
 		if rerr := selfupdate.RollbackError(err); rerr != nil {
 			return rerr
