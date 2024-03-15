@@ -169,8 +169,7 @@ export default {
 			<!-- The fullscreen banner info -->
 			<div v-if="homeBannerFullscreen" class="home-banner-info-container">
 				<p class="home-banner-info">
-					Unlock the power of the EPOS Data Portal.<br>Install now for seamless data integration driven by
-					metadata.
+					{{ bannerInfoText }}
 				</p>
 				<button class="home-banner-button" @click="homeBannerFullscreen = !homeBannerFullscreen">
 					<img src="../assets/images/rocket-icon-white.png" alt="EPOS Data Portal" class="home-icon" />Start
