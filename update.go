@@ -74,7 +74,7 @@ func (a *App) DoUpdate() error {
 		http.DefaultTransport,
 	)
 	if err != nil {
-		fmt.Println("Error loading signature")
+		return err
 	}
 
 	// Verify the binary file using the signature
