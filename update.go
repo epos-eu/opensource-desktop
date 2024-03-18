@@ -14,7 +14,7 @@ import (
 )
 
 const (
-	VERSION    = "0.0.2"
+	VERSION    = "0.0.3"
 	PUBLIC_KEY = `untrusted comment: minisign public key: E106E938CD763C05
 RWQFPHbNOOkG4bXw9P9+wzRhQLwNcBZdgn94TCJyaY7e7CyBYzXXXktB`
 )
