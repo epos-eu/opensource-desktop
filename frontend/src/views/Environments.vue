@@ -41,7 +41,8 @@ export default {
 			isDeleting: false,
 			showErrorDialog: false,
 			errorDialogConfirmButton: { show: true, text: 'OK', positive: true },
-			id: null
+			id: null,
+			loadingEnvironments: true,
 		};
 	},
 	methods: {
@@ -116,7 +117,13 @@ export default {
 		// Get the installed environments and handle the promise
 		GetInstalledEnvironments().then(environments => {
 			// If there are no environments (null), return
-			if (!environments) return;
+			if (!environments) {
+				// Hide the loading spinner after at least 1 second
+				setTimeout(() => {
+					this.loadingEnvironments = false;
+				}, 1000);
+				return;
+			}
 
 			// Filter the environments and add them to the correct list
 			environments.forEach(environment => {
@@ -147,6 +154,11 @@ export default {
 					this.selectEnvironment(environment);
 				}
 			}
+
+			// Hide the loading spinner after at least 1 second
+			setTimeout(() => {
+				this.loadingEnvironments = false;
+			}, 1000);
 		});
 	},
 };
@@ -155,6 +167,8 @@ export default {
 <template>
 	<!-- Loading spinner while deleting -->
 	<LoadingSpinner :isLoading="isDeleting" :text="'Deleting environment...'"></LoadingSpinner>
+	<!-- Loading spinner while loading the environments -->
+	<LoadingSpinner :isLoading="loadingEnvironments" :text="'Loading installed environments...'"></LoadingSpinner>
 	<!-- Confirm delete dialog -->
 	<Dialog v-if="showDialog" @confirm="confirmDelete" @cancel="cancelDelete" :text="dialogText"
 		:confirmButton="dialogConfirmButton" :cancelButton="dialogCancelButton" :title="'Delete environment'"></Dialog>
