@@ -4,11 +4,13 @@ import (
 	"bufio"
 	"context"
 	"fmt"
+	"regexp"
 
 	"database/sql"
 	"encoding/json"
 	"net"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"runtime"
 	"sort"
@@ -176,6 +178,39 @@ func (a *App) GetInstalledEnvironments() ([]Environment, error) {
 			Variables:        sections,
 			AccessPoints:     EposAccessPoints{ApiGateway: apiGateway, DataPortal: dataPortal},
 		})
+	}
+
+	// For each environment, check if it is still installed
+	for i, environment := range environments {
+
+		if environment.Platform == "docker" {
+			// Get the installed docker environments from the docker ps command
+			cmd := exec.Command("docker", "ps", "-a", "--format", "{{.Names}}")
+			output, err := cmd.Output()
+			if err != nil {
+				return nil, err
+			}
+
+			// Get the tagname of the environment
+			envName := regexp.MustCompile(`[^a-zA-Z0-9 ]+`).ReplaceAllString(environment.EnvironmentSetup.Name+environment.EnvironmentSetup.Version, "-")
+
+			// Check if the tagname is in the output of the command
+			if !strings.Contains(string(output), envName) {
+				// If it is not, that means that the environment is not installed in the system anymore (it was removed manually)
+				// Remove the environment from the slice
+				environments = append(environments[:i], environments[i+1:]...)
+				fmt.Println("Removing environment: ", environment.EnvironmentSetup.Name, environment.EnvironmentSetup.Version, environment.Platform)
+				// Remove the environment from the database
+				_, err := db.Exec("DELETE FROM environments WHERE name = ? AND version = ? AND platform = ?", environment.EnvironmentSetup.Name, environment.EnvironmentSetup.Version, environment.Platform)
+				if err != nil {
+					return nil, err
+				}
+			}
+		}
+
+		if environment.Platform == "kubernetes" {
+			// TODO
+		}
 	}
 
 	// Sort the environments by name and version
