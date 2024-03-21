@@ -185,8 +185,7 @@ func (a *App) GetInstalledEnvironments() ([]Environment, error) {
 
 		if environment.Platform == "docker" {
 			// Get the installed docker environments from the docker ps command
-			cmd := exec.Command("docker", "ps", "-a", "--format", "{{.Names}}")
-			output, err := cmd.Output()
+			output, err := RunCommand(exec.Command("docker", "ps", "-a", "--format", "{{.Names}}"))
 			if err != nil {
 				return nil, err
 			}

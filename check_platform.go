@@ -1,13 +1,9 @@
-//go:build windows
-// +build windows
-
 package main
 
 import (
 	"database/sql"
 	"os"
 	"os/exec"
-	"syscall"
 )
 
 // See if Docker is installed
@@ -35,15 +31,13 @@ func (a *App) IsDockerInstalled() bool {
 
 	// Check if docker is installed
 	// Run "docker compose --version", if it fails, run "docker-compose --version"
-	command := exec.Command("docker", "compose", "--version")
-	// This is only needed on Windows to hide the console window.
-	command.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
-	err = command.Run()
+	// command := exec.Command("docker", "compose", "--version")
+	// err = command.Run()
+	_, err = RunCommand(exec.Command("docker", "compose", "--version"))
 	if err != nil {
-		command = exec.Command("docker-compose", "--version")
-		// This is only needed on Windows to hide the console window.
-		command.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
-		err = command.Run()
+		// command = exec.Command("docker-compose", "--version")
+		// err = command.Run()
+		_, err = RunCommand(exec.Command("docker-compose", "--version"))
 		if err != nil {
 			return false
 		}
@@ -53,10 +47,9 @@ func (a *App) IsDockerInstalled() bool {
 
 func (a *App) IsDockerRunning() bool {
 	// Run the command to see if docker is running
-	command := exec.Command("docker", "info")
-	// This is only needed on Windows to hide the console window.
-	command.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
-	_, err := command.Output()
+	// command := exec.Command("docker", "info")
+	// _, err := command.Output()
+	_, err := RunCommand(exec.Command("docker", "info"))
 	return err == nil
 }
 
@@ -84,9 +77,8 @@ func (a *App) IsKubernetesInstalled() bool {
 	}
 
 	// Run the command to see if kubectl is installed
-	command := exec.Command("kubectl", "version", "--client")
-	// This is only needed on Windows to hide the console window.
-	command.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
-	_, err = command.Output()
+	// command := exec.Command("kubectl", "version", "--client")
+	// _, err = command.Output()
+	_, err = RunCommand(exec.Command("kubectl", "version", "--client"))
 	return err == nil
 }
