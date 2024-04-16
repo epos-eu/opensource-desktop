@@ -1,5 +1,7 @@
 # EPOS Data Portal Installer
 
+<img width="1594" alt="Screenshot 2024-04-16 alle 11 54 54" src="https://github.com/epos-eu/opensource-desktop/assets/159156158/87627eda-da2d-4772-8070-190b958a6e6a">
+
 ## Introduction
 
 EPOS Data Portal Installer is a user-friendly desktop application designed for the local installation of EPOS environments using Docker or Kubernetes. It simplifies the process by providing a graphical interface for the [EPOS Open Source - Docker installer](https://github.com/epos-eu/opensource-docker) and [EPOS Open Source - Kubernetes installer](https://github.com/epos-eu/opensource-kubernetes) CLI tools.
