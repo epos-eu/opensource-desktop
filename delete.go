@@ -29,6 +29,14 @@ func (a *App) DeleteInstalledEnvironment(platform, name, version, context string
 		return err
 	}
 
+	// If the environment was successfully deleted, delete it from the database
+	err = deleteEnvironmentFromDatabase(name, version, platform, context)
+
+	return err
+}
+
+// Deletes an installed environment from the database given its name and version
+func deleteEnvironmentFromDatabase(name, version, platform, context string) error {
 	// Open the database
 	db, err := sql.Open("sqlite3", databasePath)
 	if err != nil {
@@ -37,7 +45,7 @@ func (a *App) DeleteInstalledEnvironment(platform, name, version, context string
 	defer db.Close()
 
 	// Delete the environment from the database
-	result, err := db.Exec("DELETE FROM environments WHERE name = ? AND version = ? AND platform = ?", name, version, platform)
+	result, err := db.Exec("DELETE FROM environments WHERE name = ? AND version = ? AND platform = ? AND context = ?", name, version, platform, context)
 	// If there was an error or the query didn't match any rows, return the error
 	if err != nil || result == nil {
 		return err

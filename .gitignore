@@ -6,3 +6,4 @@ gitkeep
 environment.json
 environments.db
 frontend/package.json.md5
+.idea/

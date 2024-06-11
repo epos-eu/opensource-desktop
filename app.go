@@ -194,13 +194,12 @@ func (a *App) GetInstalledEnvironments() ([]Environment, error) {
 			envName := regexp.MustCompile(`[^a-zA-Z0-9 ]+`).ReplaceAllString(environment.EnvironmentSetup.Name+environment.EnvironmentSetup.Version, "-")
 
 			// Check if the tagname is in the output of the command
-			if !strings.Contains(string(output), envName) {
+			if !strings.Contains(output, envName) {
 				// If it is not, that means that the environment is not installed in the system anymore (it was removed manually)
 				// Remove the environment from the slice
 				environments = append(environments[:i], environments[i+1:]...)
-				fmt.Println("Removing environment: ", environment.EnvironmentSetup.Name, environment.EnvironmentSetup.Version, environment.Platform)
 				// Remove the environment from the database
-				_, err := db.Exec("DELETE FROM environments WHERE name = ? AND version = ? AND platform = ?", environment.EnvironmentSetup.Name, environment.EnvironmentSetup.Version, environment.Platform)
+				err = deleteEnvironmentFromDatabase(environment.EnvironmentSetup.Name, environment.EnvironmentSetup.Version, environment.Platform, environment.EnvironmentSetup.Context)
 				if err != nil {
 					return nil, err
 				}
@@ -208,7 +207,35 @@ func (a *App) GetInstalledEnvironments() ([]Environment, error) {
 		}
 
 		if environment.Platform == "kubernetes" {
-			// TODO
+			// kubectl config use-context <context>
+			_, err = RunCommand(exec.Command("kubectl", "config", "use-context", environment.EnvironmentSetup.Context))
+			if err != nil {
+				// If the context is not valid, remove the environment from the slice
+				environments = append(environments[:i], environments[i+1:]...)
+				// Remove the environment from the database
+				err = deleteEnvironmentFromDatabase(environment.EnvironmentSetup.Name, environment.EnvironmentSetup.Version, environment.Platform, environment.EnvironmentSetup.Context)
+				if err != nil {
+					return nil, err
+				}
+			}
+
+			// kubectl get namespaces
+			output, err := RunCommand(exec.Command("kubectl", "get", "namespaces", "--no-headers", "-o", "custom-columns=NAME:.metadata.name"))
+			if err != nil {
+				return nil, err
+			}
+
+			// Check if the namespace is in the output of the command
+			if !strings.Contains(output, environment.EnvironmentSetup.Name) {
+				// If it is not, that means that the environment is not installed in the system anymore (it was removed manually)
+				// Remove the environment from the slice
+				environments = append(environments[:i], environments[i+1:]...)
+				// Remove the environment from the database
+				err = deleteEnvironmentFromDatabase(environment.EnvironmentSetup.Name, environment.EnvironmentSetup.Version, environment.Platform, environment.EnvironmentSetup.Context)
+				if err != nil {
+					return nil, err
+				}
+			}
 		}
 	}
 
