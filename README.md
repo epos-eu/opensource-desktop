@@ -17,7 +17,7 @@ and [EPOS Open Source - Kubernetes installer](https://github.com/epos-eu/opensou
       appropriate installer for your operating system.
 
    | Operating System | Asset                                      | Description                         |
-                                                                                             |------------------|--------------------------------------------|-------------------------------------|
+   |------------------|--------------------------------------------|-------------------------------------|
    | Windows          | `epos-data-portal-installer-windows.exe`   | Windows `.exe`                      |
    | MacOS            | `epos-data-portal-installer-macos.app.zip` | Application in a `.app` zip         |
    | MacOS            | `epos-data-portal-installer-macos.pkg`     | `Pkg` installer for the application |
