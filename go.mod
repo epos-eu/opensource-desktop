@@ -3,8 +3,8 @@ module changeme
 go 1.22.0
 
 require (
-	github.com/epos-eu/opensource-docker v0.0.0-20240307140553-ccd72b8b2627
-	github.com/epos-eu/opensource-kubernetes v0.0.0-20240307142055-da66991ce360
+	github.com/epos-eu/opensource-docker v0.0.0-20240908110141-4b422787b014
+	github.com/epos-eu/opensource-kubernetes v0.0.0-20240908110157-1faa27cf45cb
 	github.com/google/go-github/v60 v60.0.0
 	github.com/mattn/go-sqlite3 v1.14.22
 	github.com/minio/selfupdate v0.6.0
