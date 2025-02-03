@@ -3,12 +3,12 @@ module changeme
 go 1.22.0
 
 require (
-	github.com/epos-eu/opensource-docker v0.0.0-20240908110141-4b422787b014
-	github.com/epos-eu/opensource-kubernetes v0.0.0-20240908110157-1faa27cf45cb
+	github.com/epos-eu/opensource-docker v0.0.0-20250203131413-e8ab65a2354e
+	github.com/epos-eu/opensource-kubernetes v0.0.0-20250203131538-1194300d66ee
 	github.com/google/go-github/v60 v60.0.0
 	github.com/mattn/go-sqlite3 v1.14.22
 	github.com/minio/selfupdate v0.6.0
-	github.com/wailsapp/wails/v2 v2.8.2
+	github.com/wailsapp/wails/v2 v2.9.2
 )
 
 require (
@@ -43,7 +43,7 @@ require (
 	github.com/tkrajina/go-reflector v0.5.6 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasttemplate v1.2.2 // indirect
-	github.com/wailsapp/go-webview2 v1.0.10 // indirect
+	github.com/wailsapp/go-webview2 v1.0.16 // indirect
 	github.com/wailsapp/mimetype v1.4.1 // indirect
 	golang.org/x/crypto v0.23.0 // indirect
 	golang.org/x/exp v0.0.0-20230522175609-2e198f4a06a1 // indirect
