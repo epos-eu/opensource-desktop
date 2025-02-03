@@ -80,7 +80,7 @@ jobs:
           mv build/bin/epos-data-portal-installer.app.zip build/bin/epos-data-portal-installer-macos.app.zip
           
       - name: Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           files: |
             */bin/*
