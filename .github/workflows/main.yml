@@ -37,11 +37,12 @@ jobs:
           submodules: recursive
 
       - name: Build wails
-        uses: Marco-Salvi/wails-build-action@0.0.3
+        uses: Marco-Salvi/wails-build-action@0.0.4
         id: build
         with:
           build-name: ${{ matrix.build.name }}
           build-platform: ${{ matrix.build.platform }}
+          build-tags: 'webkit2_41'
           package: false    # Don't export as a release
           nsis: false       # Don't create an NSIS installer
           go-version: '1.22.0'
